@@ -9,11 +9,19 @@ use Illuminate\View\View;
 
 class SupplierController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $serial = trim((string) $request->query('serial', ''));
+
+        $suppliers = Supplier::query()
+            ->when($serial !== '', fn ($query) => $query->where('serial_number', 'like', "%{$serial}%"))
+            ->latest('id')
+            ->get();
+
         return view('admin.supplier', [
-            'suppliers' => Supplier::latest('id')->get(),
+            'suppliers' => $suppliers,
             'nextSupplierCode' => $this->nextSupplierCode(),
+            'searchedSerial' => $serial,
         ]);
     }
 
@@ -44,6 +52,7 @@ class SupplierController extends Controller
     {
         return $request->validate([
             'mobile' => ['nullable', 'string', 'max:30'],
+            'serial_number' => ['nullable', 'string', 'max:100'],
             'name' => ['required', 'string', 'max:255'],
             'owner_name' => ['nullable', 'string', 'max:255'],
             'mode' => ['required', 'in:cash,credit'],

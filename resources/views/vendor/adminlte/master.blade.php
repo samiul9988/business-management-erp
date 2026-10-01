@@ -424,6 +424,25 @@
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
 
+    {{-- Sidebar logout link: submits the navbar's hidden POST logout form,
+         since the sidebar menu only supports plain GET links. --}}
+    <script>
+        window._AdminLTE_Ready(() => {
+            window._AdminLTE_Once('sidebar-logout-link', () => {
+                document.addEventListener('click', (event) => {
+                    const link = event.target.closest('#sidebar-logout-link');
+
+                    if (! link) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    document.getElementById('logout-form')?.submit();
+                });
+            });
+        });
+    </script>
+
 </body>
 
 </html>

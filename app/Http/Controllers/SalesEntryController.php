@@ -10,9 +10,12 @@ use Illuminate\View\View;
 
 class SalesEntryController extends Controller
 {
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('sales.entry', ['nextInvoice' => $this->nextInvoiceNumber()]);
+        return view('sales.entry', [
+            'nextInvoice' => $this->nextInvoiceNumber(),
+            'searchedBarcode' => trim((string) $request->query('barcode', '')),
+        ]);
     }
 
     public function store(Request $request, DatabaseManager $database): RedirectResponse

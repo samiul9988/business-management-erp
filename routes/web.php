@@ -56,6 +56,7 @@ use App\Http\Controllers\SerialHistoryController;
 use App\Http\Controllers\SerialPurchaseReturnController;
 use App\Http\Controllers\SerialSalesReturnController;
 use App\Http\Controllers\ServiceEntryController;
+use App\Http\Controllers\SmartSearchController;
 use App\Http\Controllers\StockReportController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SupplierDueReportController;
@@ -76,6 +77,8 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
+
+Route::get('/search', [SmartSearchController::class, 'search'])->middleware('auth')->name('search');
 
 Route::middleware('auth')->prefix('sales')->name('sales.')->group(function () {
     Route::get('/entry', [SalesEntryController::class, 'create'])->name('entry.create');

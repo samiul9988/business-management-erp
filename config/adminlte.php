@@ -198,7 +198,7 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'home',
+    'dashboard_url' => 'dashboard',
     'logout_url' => 'logout',
 
     // The HTTP method spoofed on the logout form. Set it to 'GET' when your
@@ -905,7 +905,7 @@ return [
         ['text' => 'Business Monitor', 'route' => 'business-monitor.index', 'icon' => 'bi bi-activity'],
         ['header' => 'ACCOUNT'],
         ['text' => 'Profile', 'url' => 'profile', 'icon' => 'bi bi-person-fill'],
-        ['text' => 'Logout', 'url' => 'logout', 'icon' => 'bi bi-power'],
+        ['text' => 'Logout', 'url' => '#', 'icon' => 'bi bi-power', 'id' => 'sidebar-logout-link'],
     ],
 
     /*

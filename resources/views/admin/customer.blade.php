@@ -41,7 +41,12 @@
             </form>
         </section>
         <section class="admin-crud-card">
-            <div class="sales-card-heading"><h2><i class="bi bi-list-ul"></i> Customer List</h2></div>
+            <div class="sales-card-heading">
+                <h2><i class="bi bi-list-ul"></i> Customer List</h2>
+                @if ($searchedMobile !== '')
+                    <a href="{{ route('customer.index') }}" class="btn btn-sm btn-outline-secondary">Clear search</a>
+                @endif
+            </div>
             <div class="admin-crud-table-wrap">
                 <table class="admin-crud-table">
                     <thead><tr><th>Id</th><th>Name</th><th>Mobile</th><th>Area</th><th>Due</th><th>Action</th></tr></thead>
@@ -61,7 +66,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="6">No customers added yet.</td></tr>
+                            <tr><td colspan="6">{{ $searchedMobile !== '' ? 'No customer found for mobile "'.$searchedMobile.'".' : 'No customers added yet.' }}</td></tr>
                         @endforelse
                     </tbody>
                 </table>

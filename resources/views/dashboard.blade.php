@@ -39,6 +39,12 @@
         ];
     @endphp
 
+    <form method="GET" action="{{ route('search') }}" class="dashboard-smart-search">
+        <i class="bi bi-search"></i>
+        <input type="text" name="q" placeholder="Search by phone number, barcode or serial number..." autocomplete="off" required>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
     <div class="module-grid">
         @foreach ($modules as $module)
             <a href="#" class="module-card {{ $module['class'] }}">

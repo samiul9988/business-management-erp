@@ -20,6 +20,9 @@
                     <div class="field"><label for="name">Supplier Name</label><input id="name" name="name" required value="{{ old('name') }}"></div>
                 </div>
                 <div class="field-row">
+                    <div class="field"><label for="serial_number">Serial Number</label><input id="serial_number" name="serial_number" value="{{ old('serial_number') }}"></div>
+                </div>
+                <div class="field-row">
                     <div class="field"><label for="owner_name">Owner Name</label><input id="owner_name" name="owner_name" value="{{ old('owner_name') }}"></div>
                     <div class="field"><label>Supplier Mode</label><div style="display:flex; gap:1rem; padding-top:.4rem;"><label style="font-weight:400;"><input type="radio" name="mode" value="cash" style="width:auto;" @checked(old('mode', 'cash') === 'cash')> Cash</label><label style="font-weight:400;"><input type="radio" name="mode" value="credit" style="width:auto;" @checked(old('mode') === 'credit')> Credit</label></div></div>
                 </div>
@@ -32,16 +35,22 @@
             </form>
         </section>
         <section class="admin-crud-card">
-            <div class="sales-card-heading"><h2><i class="bi bi-list-ul"></i> Supplier List</h2></div>
+            <div class="sales-card-heading">
+                <h2><i class="bi bi-list-ul"></i> Supplier List</h2>
+                @if ($searchedSerial !== '')
+                    <a href="{{ route('supplier.index') }}" class="btn btn-sm btn-outline-secondary">Clear search</a>
+                @endif
+            </div>
             <div class="admin-crud-table-wrap">
                 <table class="admin-crud-table">
-                    <thead><tr><th>Id</th><th>Name</th><th>Mobile</th><th>Mode</th><th>Due</th><th>Action</th></tr></thead>
+                    <thead><tr><th>Id</th><th>Name</th><th>Mobile</th><th>Serial Number</th><th>Mode</th><th>Due</th><th>Action</th></tr></thead>
                     <tbody>
                         @forelse ($suppliers as $supplier)
                             <tr>
                                 <td>{{ $supplier->supplier_code }}</td>
                                 <td>{{ $supplier->name }}</td>
                                 <td>{{ $supplier->mobile ?? '-' }}</td>
+                                <td>{{ $supplier->serial_number ?? '-' }}</td>
                                 <td>{{ ucfirst($supplier->mode) }}</td>
                                 <td>{{ number_format($supplier->previous_due, 2) }}</td>
                                 <td class="row-actions">
@@ -52,7 +61,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="6">No suppliers added yet.</td></tr>
+                            <tr><td colspan="7">{{ $searchedSerial !== '' ? 'No supplier found for serial number "'.$searchedSerial.'".' : 'No suppliers added yet.' }}</td></tr>
                         @endforelse
                     </tbody>
                 </table>

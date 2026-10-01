@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Supplier extends Model
 {
-    protected $fillable = ['supplier_code', 'mobile', 'name', 'owner_name', 'mode', 'address', 'email', 'previous_due', 'image'];
+    protected $fillable = ['supplier_code', 'mobile', 'serial_number', 'name', 'owner_name', 'mode', 'address', 'email', 'previous_due', 'image'];
 
     protected function casts(): array
     {

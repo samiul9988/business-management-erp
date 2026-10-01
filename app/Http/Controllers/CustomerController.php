@@ -10,12 +10,20 @@ use Illuminate\View\View;
 
 class CustomerController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $mobile = trim((string) $request->query('mobile', ''));
+
+        $customers = Customer::with('area')
+            ->when($mobile !== '', fn ($query) => $query->where('mobile', 'like', "%{$mobile}%"))
+            ->latest('id')
+            ->get();
+
         return view('admin.customer', [
-            'customers' => Customer::with('area')->latest('id')->get(),
+            'customers' => $customers,
             'areas' => Area::orderBy('name')->get(),
             'nextCustomerCode' => $this->nextCustomerCode(),
+            'searchedMobile' => $mobile,
         ]);
     }
 
