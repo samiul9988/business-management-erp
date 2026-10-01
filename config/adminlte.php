@@ -559,7 +559,7 @@ return [
     // the classic AdminLTE dark sidebar, 'light' for a light one, or null to
     // inherit the color mode of the page. Any other value is read as 'dark'.
 
-    'sidebar_theme' => 'dark',
+    'sidebar_theme' => 'light',
 
     // Behavior of the sidebar. The mini mode keeps the icons of a collapsed
     // sidebar visible, 'sidebar_collapse' starts the panel with the sidebar

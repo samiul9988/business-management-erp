@@ -344,6 +344,65 @@
         @livewireScripts
     @endif
 
+    {{-- Keep the sidebar scroll position across full page navigations, and
+         make sure the active section stays expanded and highlighted. --}}
+    <script>
+        (() => {
+            'use strict';
+            const STORAGE_KEY = 'pos-sidebar-scroll';
+
+            const getViewport = () => {
+                const wrapper = document.querySelector('.sidebar-wrapper');
+                if (!wrapper) return null;
+                if (typeof OverlayScrollbarsGlobal === 'undefined' || !OverlayScrollbarsGlobal?.OverlayScrollbars) {
+                    return wrapper;
+                }
+                const instance = OverlayScrollbarsGlobal.OverlayScrollbars(wrapper);
+                return instance ? instance.elements().viewport : wrapper;
+            };
+
+            window._AdminLTE_Ready(() => {
+                // Open every treeview that contains the active link, so the
+                // current section is visible without extra clicks.
+                document.querySelectorAll('.sidebar-menu .nav-link.active').forEach((link) => {
+                    let parent = link.closest('.nav-treeview');
+                    while (parent) {
+                        parent.style.display = 'block';
+                        const parentItem = parent.closest('li.nav-item');
+                        parentItem?.classList.add('menu-open');
+                        parentItem?.querySelector(':scope > .nav-link')?.classList.add('active');
+                        parent = parentItem?.parentElement?.closest('.nav-treeview') ?? null;
+                    }
+                });
+
+                // Restore the sidebar's scroll position from before the click
+                // that navigated to this page.
+                setTimeout(() => {
+                    const viewport = getViewport();
+                    const saved = sessionStorage.getItem(STORAGE_KEY);
+                    if (viewport && saved !== null) {
+                        viewport.scrollTop = parseInt(saved, 10) || 0;
+                    }
+                }, 0);
+
+                // Save the scroll position right before leaving the page, and
+                // also the moment a sidebar link is clicked (covers browsers
+                // that fire 'beforeunload' too late for this to matter).
+                const saveScroll = () => {
+                    const viewport = getViewport();
+                    if (viewport) {
+                        sessionStorage.setItem(STORAGE_KEY, String(viewport.scrollTop));
+                    }
+                };
+
+                window.addEventListener('beforeunload', saveScroll);
+                document.querySelectorAll('.sidebar-menu a.nav-link').forEach((link) => {
+                    link.addEventListener('click', saveScroll);
+                });
+            });
+        })();
+    </script>
+
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
 
