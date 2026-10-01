@@ -1,0 +1,54 @@
+@extends('adminlte::page')
+
+@section('title', 'Unit Entry')
+
+@section('content_header')
+    <div class="sales-breadcrumb"><i class="bi bi-house-door-fill"></i> Home <span>›</span> Administration <span>›</span> Unit Entry</div>
+@stop
+
+@section('content')
+    @if (session('success')) <div class="alert alert-success"><i class="bi bi-check-circle-fill"></i> {{ session('success') }}</div> @endif
+    <div class="admin-crud-layout">
+        <section class="admin-crud-card">
+            <div class="sales-card-heading"><h2><i class="bi bi-rulers"></i> Add Unit</h2></div>
+            <form method="POST" action="{{ route('unit.store') }}" class="admin-crud-form">
+                @csrf
+                <div class="field"><label for="name">Unit Name</label><input id="name" name="name" required value="{{ old('name') }}"></div>
+                @error('name') <div class="text-danger" style="font-size:.75rem">{{ $message }}</div> @enderror
+                <div class="field"><label for="description">Description</label><input id="description" name="description" value="{{ old('description') }}"></div>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
+            </form>
+        </section>
+        <section class="admin-crud-card">
+            <div class="sales-card-heading"><h2><i class="bi bi-list-ul"></i> Unit List</h2></div>
+            <div class="admin-crud-table-wrap">
+                <table class="admin-crud-table">
+                    <thead><tr><th>Sl No</th><th>Unit Name</th><th>Description</th><th>Action</th></tr></thead>
+                    <tbody>
+                        @forelse ($units as $index => $unit)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td colspan="2">
+                                    <form method="POST" action="{{ route('unit.update', $unit) }}" style="display:flex; gap:.4rem;">
+                                        @csrf @method('PUT')
+                                        <input name="name" value="{{ $unit->name }}" style="padding:.3rem .5rem; border:1px solid #cad8e5; border-radius:4px;">
+                                        <input name="description" value="{{ $unit->description }}" placeholder="Description" style="padding:.3rem .5rem; border:1px solid #cad8e5; border-radius:4px;">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                                    </form>
+                                </td>
+                                <td class="row-actions">
+                                    <form method="POST" action="{{ route('unit.destroy', $unit) }}" onsubmit="return confirm('Delete this unit?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="action-delete"><i class="bi bi-trash3"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="4">No units added yet.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+@stop
