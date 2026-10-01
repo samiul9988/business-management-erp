@@ -25,16 +25,42 @@
     <main class="pos-auth-shell {{ $authType }}-box">
 
         <section class="pos-auth-brand">
-            <a href="{{ $dashboardUrl }}" class="pos-brand-mark"><span><i class="bi bi-cart3"></i></span> POS <strong>Express</strong></a>
+            <a href="{{ $dashboardUrl }}" class="pos-brand-mark"><span class="pos-sidebar-logo-icon"><i class="bi bi-cart3"></i></span> POS <strong>Express</strong></a>
             <div class="pos-auth-copy">
                 <span class="dashboard-eyebrow">Smart business management</span>
                 <h1>Everything you need<br>to run your business<br><em>better.</em></h1>
                 <p>Sales, purchases, repairs, accounts and more — all in one simple POS platform.</p>
             </div>
-            <div class="pos-auth-orbit orbit-one"></div>
-            <div class="pos-auth-orbit orbit-two"></div>
-            <i class="bi bi-bar-chart-line-fill pos-auth-float float-one"></i>
-            <i class="bi bi-receipt pos-auth-float float-two"></i>
+
+            <ul class="pos-auth-features">
+                <li><span class="pos-auth-feature-icon feature-blue"><i class="bi bi-cart-check-fill"></i></span><div><strong>Sales &amp; POS</strong><span>Fast, easy and secure sales process</span></div></li>
+                <li><span class="pos-auth-feature-icon feature-green"><i class="bi bi-box-seam-fill"></i></span><div><strong>Purchases</strong><span>Manage suppliers and inventory</span></div></li>
+                <li><span class="pos-auth-feature-icon feature-purple"><i class="bi bi-tools"></i></span><div><strong>Repairs</strong><span>Track and manage service &amp; repairs</span></div></li>
+                <li><span class="pos-auth-feature-icon feature-orange"><i class="bi bi-bar-chart-fill"></i></span><div><strong>Accounts</strong><span>Complete financial control</span></div></li>
+                <li><span class="pos-auth-feature-icon feature-teal"><i class="bi bi-people-fill"></i></span><div><strong>And more</strong><span>All in one platform</span></div></li>
+            </ul>
+
+            <div class="pos-auth-mockup" aria-hidden="true">
+                <div class="pos-auth-mockup-screen">
+                    <div class="pos-auth-mockup-sidebar">
+                        <span class="pos-auth-mockup-dot"></span>
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                    <div class="pos-auth-mockup-main">
+                        <div class="pos-auth-mockup-cards">
+                            <div class="mockup-card card-blue"><i class="bi bi-cash-coin"></i><strong>৳125,480</strong><small>Total Sales</small></div>
+                            <div class="mockup-card card-green"><i class="bi bi-bag-check-fill"></i><strong>৳82,350</strong><small>Total Purchases</small></div>
+                        </div>
+                        <div class="pos-auth-mockup-chart"><svg viewBox="0 0 200 54" preserveAspectRatio="none"><polyline points="0,40 25,30 50,38 75,18 100,28 125,10 150,22 175,6 200,16"></polyline></svg></div>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="pos-auth-trust">
+                <li><i class="bi bi-shield-check"></i> Secure &amp; Reliable</li>
+                <li><i class="bi bi-lightning-charge-fill"></i> Fast Performance</li>
+                <li><i class="bi bi-cloud-check-fill"></i> Cloud Ready</li>
+            </ul>
         </section>
 
         <section class="pos-auth-panel">
@@ -42,29 +68,10 @@
         {{-- Logo --}}
         <h1 class="{{ $authType }}-logo">
             <a href="{{ $dashboardUrl }}">
-
-                {{-- Logo Image --}}
-                @if (config('adminlte.auth_logo.enabled', false))
-                    <img src="{{ asset(config('adminlte.auth_logo.img.path')) }}"
-                         alt="{{ config('adminlte.auth_logo.img.alt') }}"
-                         @if (config('adminlte.auth_logo.img.class', null))
-                            class="{{ config('adminlte.auth_logo.img.class') }}"
-                         @endif
-                         @if (config('adminlte.auth_logo.img.width', null))
-                            width="{{ config('adminlte.auth_logo.img.width') }}"
-                         @endif
-                         @if (config('adminlte.auth_logo.img.height', null))
-                            height="{{ config('adminlte.auth_logo.img.height') }}"
-                         @endif>
-                @else
-                    <img src="{{ asset(config('adminlte.logo_img')) }}"
-                         alt="{{ config('adminlte.logo_img_alt') }}" height="50">
-                @endif
-
-                {{-- Logo Label --}}
-                {!! config('adminlte.logo', '<b>Admin</b>LTE') !!}
-
+                <span class="pos-sidebar-logo-icon"><i class="bi bi-cart3"></i></span>
+                <span>POS <b>Express</b></span>
             </a>
+            <small>Smart business management</small>
         </h1>
 
         {{-- Card Box --}}
