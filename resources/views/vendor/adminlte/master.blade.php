@@ -235,7 +235,7 @@
     @include('adminlte::partials.common.css-variables')
 
     {{-- Custom Stylesheets (post AdminLTE) --}}
-    <link rel="stylesheet" href="{{ asset('css/pos-theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pos-theme.css') }}?v={{ @filemtime(public_path('css/pos-theme.css')) }}">
     @yield('adminlte_css')
 
     {{-- Favicon --}}
