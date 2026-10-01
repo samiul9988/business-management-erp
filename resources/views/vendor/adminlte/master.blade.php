@@ -375,6 +375,24 @@
                     }
                 });
 
+                // Some shortcut links (e.g. a supplier/customer page reachable
+                // from more than one module) exist in several top-level
+                // sections at once, so more than one can end up marked
+                // active/open for the same page. Only the sidebar's own
+                // scroll restoration below cares about a single state, and
+                // showing two sections open at once reads as a glitch, so
+                // keep just the last matching section expanded.
+                const openTopLevel = Array.from(document.querySelectorAll('.sidebar-menu > li.nav-item.menu-open'));
+                openTopLevel.slice(0, -1).forEach((item) => {
+                    item.classList.remove('menu-open');
+                    item.querySelector(':scope > .nav-link')?.classList.remove('active');
+                    const submenu = item.querySelector(':scope > .nav-treeview');
+                    if (submenu) {
+                        submenu.style.display = 'none';
+                        submenu.querySelectorAll('.nav-link.active').forEach((l) => l.classList.remove('active'));
+                    }
+                });
+
                 // Restore the sidebar's scroll position from before the click
                 // that navigated to this page.
                 setTimeout(() => {
