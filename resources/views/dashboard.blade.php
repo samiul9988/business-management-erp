@@ -2,26 +2,29 @@
 
 @section('title', 'Dashboard')
 
-@section('content_header')
-    <div class="dashboard-hero">
-        <div>
-            <span class="dashboard-eyebrow">Good {{ now()->format('A') === 'AM' ? 'Morning' : 'Evening' }},</span>
-            <h1>{{ auth()->user()->name }}</h1>
-            <p>Welcome to your POS Express dashboard</p>
-            <div class="dashboard-meta">
-                <span><i class="bi bi-diagram-3-fill"></i> Branch Access</span>
-                <span><i class="bi bi-calendar3"></i> {{ now()->format('D, d M Y') }}</span>
-                <span><i class="bi bi-clock-fill"></i> {{ now()->format('h:i:s A') }}</span>
+{{-- Hero banner temporarily hidden on request; re-enable by flipping this to true. --}}
+@if (false)
+    @section('content_header')
+        <div class="dashboard-hero">
+            <div>
+                <span class="dashboard-eyebrow">Good {{ now()->format('A') === 'AM' ? 'Morning' : 'Evening' }},</span>
+                <h1>{{ auth()->user()->name }}</h1>
+                <p>Welcome to your POS Express dashboard</p>
+                <div class="dashboard-meta">
+                    <span><i class="bi bi-diagram-3-fill"></i> Branch Access</span>
+                    <span><i class="bi bi-calendar3"></i> {{ now()->format('D, d M Y') }}</span>
+                    <span><i class="bi bi-clock-fill"></i> {{ now()->format('h:i:s A') }}</span>
+                </div>
             </div>
+            <div class="hero-illustration" aria-hidden="true">
+                <i class="bi bi-display"></i>
+                <i class="bi bi-cart3"></i>
+                <i class="bi bi-receipt"></i>
+            </div>
+            <div class="hero-message">Smart POS<br><strong>for a Better<br>Tomorrow</strong></div>
         </div>
-        <div class="hero-illustration" aria-hidden="true">
-            <i class="bi bi-display"></i>
-            <i class="bi bi-cart3"></i>
-            <i class="bi bi-receipt"></i>
-        </div>
-        <div class="hero-message">Smart POS<br><strong>for a Better<br>Tomorrow</strong></div>
-    </div>
-@stop
+    @stop
+@endif
 
 @section('content')
     @php
