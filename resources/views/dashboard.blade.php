@@ -40,8 +40,7 @@
     @endphp
 
     <div class="dashboard-brand-banner">
-        <span class="dashboard-brand-icon"><i class="bi bi-cart3"></i></span>
-        <span class="dashboard-brand-text">AK Computer, CCTV &amp; Laptop</span>
+        <img src="{{ asset('images/brand-logo.png') }}" alt="3G Computers" class="dashboard-brand-logo">
     </div>
 
     <form method="GET" action="{{ route('search') }}" class="dashboard-smart-search">
