@@ -75,6 +75,10 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
+// Public, unauthenticated invoice link: shared with customers so they can
+// view their invoice without logging in.
+Route::get('/i/{token}', [SalesInvoiceController::class, 'public'])->name('sales.invoice.public');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');

@@ -34,8 +34,15 @@
         .qr-block img { width: 120px; height: 120px; }
         .signatures { display: flex; justify-content: space-between; margin-top: 40px; }
         .signatures span { display: inline-block; border-top: 1px solid #000; padding-top: 4px; min-width: 160px; text-align: center; }
-        .invoice-actions { max-width: 860px; margin: 0 auto 12px; text-align: right; }
+        .invoice-actions { max-width: 860px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
         .invoice-actions button { padding: .5rem 1.1rem; border: 0; border-radius: 4px; background: #1769ed; color: #fff; font-size: .85rem; cursor: pointer; }
+        .share-link-bar { display: flex; align-items: center; gap: .5rem; font-size: .8rem; }
+        .share-link-bar input { width: 280px; padding: .35rem .5rem; border: 1px solid #ccc; border-radius: 4px; font-size: .78rem; color: #444; }
+        .share-link-bar button { padding: .35rem .6rem; border: 1px solid #1769ed; border-radius: 4px; background: #fff; color: #1769ed; font-size: .78rem; cursor: pointer; }
+        .copy-toast { font-size: .78rem; color: #1a9d53; font-weight: 600; opacity: 0; transition: opacity .2s ease; }
+        .copy-toast.show { opacity: 1; }
+        .share-link-footer { margin-top: 18px; font-size: 10.5px; color: #555; }
+        .share-link-footer a { color: #1769ed; }
         @media print {
             body { background: #fff; padding: 0; }
             .invoice-actions { display: none; }
@@ -44,7 +51,15 @@
     </style>
 </head>
 <body>
+    @php $shareUrl = route('sales.invoice.public', $sale->share_token); @endphp
+
     <div class="invoice-actions">
+        <div class="share-link-bar">
+            <span>Share link:</span>
+            <input type="text" id="share-link-input" value="{{ $shareUrl }}" readonly onclick="this.select()">
+            <button type="button" id="share-link-copy">Copy</button>
+            <span class="copy-toast" id="share-link-toast">Copied!</span>
+        </div>
         <button type="button" onclick="window.print()">Print Invoice</button>
     </div>
 
@@ -132,17 +147,68 @@
         </div>
 
         <div class="qr-block">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data={{ urlencode(route('sales.record.invoice', $sale)) }}" alt="Invoice QR code">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data={{ urlencode($shareUrl) }}" alt="Invoice QR code">
         </div>
 
         <div class="signatures">
             <span>Received by</span>
             <span>Authorized by</span>
         </div>
+
+        <p class="share-link-footer">View this invoice online: <a href="{{ $shareUrl }}">{{ $shareUrl }}</a></p>
     </div>
 
     @if (request()->boolean('print'))
         <script>window.addEventListener('load', () => window.print());</script>
     @endif
+
+    <script>
+        (() => {
+            const input = document.getElementById('share-link-input');
+            const button = document.getElementById('share-link-copy');
+            const toast = document.getElementById('share-link-toast');
+
+            const fallbackCopy = (text) => {
+                const temp = document.createElement('textarea');
+                temp.value = text;
+                temp.style.position = 'fixed';
+                temp.style.opacity = '0';
+                document.body.appendChild(temp);
+                temp.focus();
+                temp.select();
+                const copied = document.execCommand('copy');
+                temp.remove();
+                return copied;
+            };
+
+            const showToast = () => {
+                toast.classList.add('show');
+                clearTimeout(showToast.timer);
+                showToast.timer = setTimeout(() => toast.classList.remove('show'), 1800);
+            };
+
+            button.addEventListener('click', async () => {
+                const text = input.value;
+                let copied = false;
+
+                if (navigator.clipboard?.writeText && window.isSecureContext) {
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        copied = true;
+                    } catch (e) {
+                        copied = false;
+                    }
+                }
+
+                if (! copied) {
+                    copied = fallbackCopy(text);
+                }
+
+                if (copied) {
+                    showToast();
+                }
+            });
+        })();
+    </script>
 </body>
 </html>

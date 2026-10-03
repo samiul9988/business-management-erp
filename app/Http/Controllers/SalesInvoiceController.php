@@ -22,6 +22,18 @@ class SalesInvoiceController extends Controller
 
     public function show(Sale $sale): View
     {
+        return $this->renderInvoice($sale);
+    }
+
+    public function public(string $token): View
+    {
+        $sale = Sale::where('share_token', $token)->firstOrFail();
+
+        return $this->renderInvoice($sale);
+    }
+
+    private function renderInvoice(Sale $sale): View
+    {
         $sale->load(['items', 'user']);
 
         $customer = $sale->customer_mobile
