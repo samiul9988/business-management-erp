@@ -773,7 +773,7 @@ return [
         ['type' => 'fullscreen-widget', 'topnav_right' => true],
         ['text' => 'Dashboard', 'url' => 'dashboard', 'icon' => 'bi bi-house-door-fill'],
         [
-            'text' => 'Sales Module', 'icon' => 'bi bi-currency-dollar', 'classes' => 'sales-parent',
+            'text' => 'Sales Module', 'icon' => 'bi bi-currency-dollar', 'classes' => 'sales-parent', 'url' => 'modules/sales', 'active' => 'modules/sales',
             'submenu' => [
                 ['text' => 'Sales Entry', 'route' => 'sales.entry.create', 'icon' => 'bi bi-currency-dollar'],
                 ['text' => 'Service Entry', 'route' => 'sales.service-entry.create', 'icon' => 'bi bi-tools'],
@@ -793,7 +793,7 @@ return [
             ],
         ],
         [
-            'text' => 'Purchase Module', 'icon' => 'bi bi-cart3', 'classes' => 'sales-parent',
+            'text' => 'Purchase Module', 'icon' => 'bi bi-cart3', 'classes' => 'sales-parent', 'url' => 'modules/purchase', 'active' => 'modules/purchase',
             'submenu' => [
                 ['text' => 'Purchase Entry', 'route' => 'purchase.entry.create', 'icon' => 'bi bi-cart-plus'],
                 ['text' => 'Purchase Return', 'route' => 'purchase.return.create', 'icon' => 'bi bi-arrow-counterclockwise'],
@@ -803,7 +803,7 @@ return [
             ],
         ],
         [
-            'text' => 'Pending Module', 'icon' => 'bi bi-clock-fill', 'classes' => 'sales-parent',
+            'text' => 'Pending Module', 'icon' => 'bi bi-clock-fill', 'classes' => 'sales-parent', 'url' => 'modules/pending', 'active' => 'modules/pending',
             'submenu' => [
                 ['text' => 'Sales Record', 'route' => 'pending-sales.index', 'icon' => 'bi bi-hourglass-split'],
                 ['text' => 'Damage Entry', 'route' => 'damage.entry.create', 'icon' => 'bi bi-exclamation-triangle'],
@@ -815,7 +815,7 @@ return [
             ],
         ],
         [
-            'text' => 'Repair Module', 'icon' => 'bi bi-wrench-adjustable', 'classes' => 'sales-parent',
+            'text' => 'Repair Module', 'icon' => 'bi bi-wrench-adjustable', 'classes' => 'sales-parent', 'url' => 'modules/repair', 'active' => 'modules/repair',
             'submenu' => [
                 ['text' => 'Repair Entry', 'route' => 'repair.entry.create', 'icon' => 'bi bi-tools'],
                 ['text' => 'Repair Company', 'route' => 'repair-company.index', 'icon' => 'bi bi-building-gear'],
@@ -833,14 +833,14 @@ return [
             ],
         ],
         [
-            'text' => 'Warranty Module', 'icon' => 'bi bi-shield-fill-check', 'classes' => 'sales-parent',
+            'text' => 'Warranty Module', 'icon' => 'bi bi-shield-fill-check', 'classes' => 'sales-parent', 'url' => 'modules/warranty', 'active' => 'modules/warranty',
             'submenu' => [
                 ['text' => 'Warranty Entry', 'route' => 'warranty.entry.create', 'icon' => 'bi bi-shield-plus'],
                 ['text' => 'Warranty Record', 'route' => 'warranty.record', 'icon' => 'bi bi-list-ul'],
             ],
         ],
         [
-            'text' => 'Accounts Module', 'icon' => 'bi bi-file-earmark-text-fill', 'classes' => 'sales-parent',
+            'text' => 'Accounts Module', 'icon' => 'bi bi-file-earmark-text-fill', 'classes' => 'sales-parent', 'url' => 'modules/accounts', 'active' => 'modules/accounts',
             'submenu' => [
                 ['text' => 'Cash Transaction', 'route' => 'cash-transaction.index', 'icon' => 'bi bi-cash'],
                 ['text' => 'Bank Transactions', 'route' => 'bank-transaction.index', 'icon' => 'bi bi-bank2'],
@@ -858,7 +858,7 @@ return [
             ],
         ],
         [
-            'text' => 'HR & Payroll', 'icon' => 'bi bi-people-fill', 'classes' => 'sales-parent',
+            'text' => 'HR & Payroll', 'icon' => 'bi bi-people-fill', 'classes' => 'sales-parent', 'url' => 'modules/hr-payroll', 'active' => 'modules/hr-payroll',
             'submenu' => [
                 ['text' => 'Salary Generate', 'route' => 'salary-generate.index', 'icon' => 'bi bi-cash-stack'],
                 ['text' => 'Salary Payment', 'route' => 'salary-payment.index', 'icon' => 'bi bi-cash-coin'],
@@ -870,7 +870,7 @@ return [
             ],
         ],
         [
-            'text' => 'Reports Module', 'icon' => 'bi bi-bar-chart-fill', 'classes' => 'sales-parent',
+            'text' => 'Reports Module', 'icon' => 'bi bi-bar-chart-fill', 'classes' => 'sales-parent', 'url' => 'modules/reports', 'active' => 'modules/reports',
             'submenu' => [
                 ['text' => 'Profit & Loss Report', 'route' => 'profit-loss.index', 'icon' => 'bi bi-graph-up'],
                 ['text' => 'Daily Profit & Loss', 'route' => 'daily-profit-loss.index', 'icon' => 'bi bi-calendar3'],
@@ -889,7 +889,7 @@ return [
             ],
         ],
         [
-            'text' => 'Administration', 'icon' => 'bi bi-gear-fill', 'classes' => 'sales-parent',
+            'text' => 'Administration', 'icon' => 'bi bi-gear-fill', 'classes' => 'sales-parent', 'url' => 'modules/administration', 'active' => 'modules/administration',
             'submenu' => [
                 ['text' => 'Product Entry', 'route' => 'product.index', 'icon' => 'bi bi-box-seam'],
                 ['text' => 'Customer Entry', 'route' => 'customer.index', 'icon' => 'bi bi-person-vcard'],

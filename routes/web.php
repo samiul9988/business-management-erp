@@ -27,6 +27,7 @@ use App\Http\Controllers\InvestmentAccountController;
 use App\Http\Controllers\InvestmentTransactionController;
 use App\Http\Controllers\LoanAccountController;
 use App\Http\Controllers\LoanTransactionController;
+use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\MonthController;
 use App\Http\Controllers\CashViewController;
 use App\Http\Controllers\DailyProfitLossController;
@@ -79,6 +80,7 @@ Route::get('/dashboard', function () {
 })->middleware('auth')->name('dashboard');
 
 Route::get('/search', [SmartSearchController::class, 'search'])->middleware('auth')->name('search');
+Route::get('/modules/{slug}', [ModuleController::class, 'show'])->middleware('auth')->name('modules.show');
 
 Route::middleware('auth')->prefix('sales')->name('sales.')->group(function () {
     Route::get('/entry', [SalesEntryController::class, 'create'])->name('entry.create');

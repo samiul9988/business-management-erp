@@ -26,18 +26,23 @@
 @section('content')
     @php
         $modules = [
-            ['title' => 'Sales Module', 'description' => 'Create sales, manage customers and generate invoices.', 'icon' => 'bi-currency-dollar', 'class' => 'module-blue'],
-            ['title' => 'Purchase Module', 'description' => 'Manage purchases, suppliers and stock.', 'icon' => 'bi-cart3', 'class' => 'module-green'],
-            ['title' => 'Accounts Module', 'description' => 'Track accounts, expenses and financial reports.', 'icon' => 'bi-file-earmark-text', 'class' => 'module-purple'],
-            ['title' => 'Warranty Module', 'description' => 'Manage product warranties and service details.', 'icon' => 'bi-shield-fill-check', 'class' => 'module-orange'],
-            ['title' => 'Repair Module', 'description' => 'Handle product repairs and service tracking.', 'icon' => 'bi-wrench-adjustable', 'class' => 'module-pink'],
-            ['title' => 'Reports Module', 'description' => 'View and print all kinds of reports.', 'icon' => 'bi-file-earmark-bar-graph', 'class' => 'module-teal'],
-            ['title' => 'HR & Payroll', 'description' => 'Manage employee records and payroll.', 'icon' => 'bi-people-fill', 'class' => 'module-violet'],
-            ['title' => 'Administration', 'description' => 'System settings and user management.', 'icon' => 'bi-gear-fill', 'class' => 'module-sky'],
-            ['title' => 'Business Monitor', 'description' => 'Real-time business overview and statistics.', 'icon' => 'bi-bar-chart-line-fill', 'class' => 'module-cyan'],
-            ['title' => 'LogOut', 'description' => 'Safely sign out from the system.', 'icon' => 'bi-power', 'class' => 'module-slate'],
+            ['title' => 'Sales Module', 'icon' => 'bi-currency-dollar', 'accent' => '#2377ed', 'href' => route('modules.show', 'sales')],
+            ['title' => 'Purchase Module', 'icon' => 'bi-cart3', 'accent' => '#3eb27c', 'href' => route('modules.show', 'purchase')],
+            ['title' => 'Accounts Module', 'icon' => 'bi-file-earmark-text', 'accent' => '#7752df', 'href' => route('modules.show', 'accounts')],
+            ['title' => 'Warranty Module', 'icon' => 'bi-shield-fill-check', 'accent' => '#ff851e', 'href' => route('modules.show', 'warranty')],
+            ['title' => 'Repair Module', 'icon' => 'bi-wrench-adjustable', 'accent' => '#ed4d70', 'href' => route('modules.show', 'repair')],
+            ['title' => 'Reports Module', 'icon' => 'bi-file-earmark-bar-graph', 'accent' => '#27aaa3', 'href' => route('modules.show', 'reports')],
+            ['title' => 'HR & Payroll', 'icon' => 'bi-people-fill', 'accent' => '#7752df', 'href' => route('modules.show', 'hr-payroll')],
+            ['title' => 'Administration', 'icon' => 'bi-gear-fill', 'accent' => '#607697', 'href' => route('modules.show', 'administration')],
+            ['title' => 'Business Monitor', 'icon' => 'bi-bar-chart-line-fill', 'accent' => '#27aaa3', 'href' => route('business-monitor.index')],
+            ['title' => 'LogOut', 'icon' => 'bi-power', 'accent' => '#607697', 'href' => '#', 'id' => 'dashboard-logout-link'],
         ];
     @endphp
+
+    <div class="dashboard-brand-banner">
+        <span class="dashboard-brand-icon"><i class="bi bi-cart3"></i></span>
+        <span class="dashboard-brand-text">AK Computer, CCTV &amp; Laptop</span>
+    </div>
 
     <form method="GET" action="{{ route('search') }}" class="dashboard-smart-search">
         <i class="bi bi-search"></i>
@@ -45,14 +50,25 @@
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    <div class="module-grid">
+    <div class="module-grid-lg">
         @foreach ($modules as $module)
-            <a href="#" class="module-card {{ $module['class'] }}">
-                <span class="module-icon"><i class="bi {{ $module['icon'] }}"></i></span>
-                <span class="module-title">{{ $module['title'] }}</span>
-                <span class="module-description">{{ $module['description'] }}</span>
-                <span class="module-arrow"><i class="bi bi-arrow-right"></i></span>
+            <a href="{{ $module['href'] }}" @isset($module['id']) id="{{ $module['id'] }}" @endisset class="module-card-lg" style="--module-accent: {{ $module['accent'] }};">
+                <i class="bi {{ $module['icon'] }} module-icon-lg"></i>
+                <span class="module-title-lg">{{ $module['title'] }}</span>
             </a>
         @endforeach
     </div>
+
+    <form id="dashboard-logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
+        @csrf
+    </form>
 @stop
+
+@push('js')
+<script>
+    document.getElementById('dashboard-logout-link')?.addEventListener('click', (event) => {
+        event.preventDefault();
+        document.getElementById('dashboard-logout-form').submit();
+    });
+</script>
+@endpush
