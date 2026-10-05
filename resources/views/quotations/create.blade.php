@@ -10,7 +10,7 @@
     <form method="POST" action="{{ route('quotations.entry.store') }}" class="pos-sales-entry" id="quotation-entry-form">
         @csrf
         <div class="sales-entry-toolbar">
-            <div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Quotation Entry</h1><p>Prepare and save a quotation for a customer.</p></div>
+            <div><span class="sales-kicker">3G COMPUTERS</span><h1>Quotation Entry</h1><p>Prepare and save a quotation for a customer.</p></div>
             <div class="invoice-badge"><small>Quotation no</small><strong>{{ $nextQuotationNo }}</strong></div>
             <div class="date-field"><label for="quotation_date">Date</label><input id="quotation_date" name="quotation_date" type="date" value="{{ old('quotation_date', now()->toDateString()) }}" required></div>
             <div class="date-field"><label for="valid_until">Valid Until</label><input id="valid_until" name="valid_until" type="date" value="{{ old('valid_until', now()->addDays(7)->toDateString()) }}"></div>

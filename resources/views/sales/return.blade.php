@@ -10,7 +10,7 @@
     <form method="POST" action="{{ route('sales.return.store') }}" class="pos-sales-entry sales-return-page" id="sales-return-form">
         @csrf
         <div class="sales-entry-toolbar return-entry-toolbar">
-            <div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Sales Return</h1><p>Return sold products safely and update the original invoice balance.</p></div>
+            <div><span class="sales-kicker">3G COMPUTERS</span><h1>Sales Return</h1><p>Return sold products safely and update the original invoice balance.</p></div>
             <div class="invoice-badge"><small>Return no</small><strong>{{ $nextReturn }}</strong></div>
             <div class="date-field"><label for="return_date">Date</label><input id="return_date" name="return_date" type="date" value="{{ old('return_date', now()->toDateString()) }}" required></div>
         </div>

@@ -253,13 +253,13 @@ class BusinessDemoSeeder extends Seeder
 
     private function seedCompanyProfile(): void
     {
-        CompanyProfile::firstOrCreate(['name' => 'AK Computer, CCTV & Laptop'], [
+        CompanyProfile::firstOrCreate(['name' => '3G Computers'], [
             'description' => 'Sales and service center for computers, laptops, and CCTV surveillance systems.',
             'branch_name' => 'Main Branch',
-            'branch_title' => 'AK Computer, CCTV & Laptop - Banarupa Branch',
+            'branch_title' => '3G Computers - Banarupa Branch',
             'invoice_print_type' => 'a4',
             'branch_address' => 'ShopNo# ICR Shopping Plaza (2nd Floor), Banarupa, Rangamati',
-            'invoice_header' => 'Thank you for choosing AK Computer, CCTV & Laptop',
+            'invoice_header' => 'Thank you for choosing 3G Computers',
             'invoice_footer' => 'Goods once sold cannot be returned without receipt.',
         ]);
     }

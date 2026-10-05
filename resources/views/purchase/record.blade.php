@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="sales-record-page">
-        <div class="record-titlebar"><div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Purchase Record</h1><p>Search, review, and print completed purchase transactions.</p></div><button type="button" class="btn btn-light" onclick="window.print()"><i class="bi bi-printer"></i> Print</button></div>
+        <div class="record-titlebar"><div><span class="sales-kicker">3G COMPUTERS</span><h1>Purchase Record</h1><p>Search, review, and print completed purchase transactions.</p></div><button type="button" class="btn btn-light" onclick="window.print()"><i class="bi bi-printer"></i> Print</button></div>
         <form method="GET" action="{{ route('purchase.record') }}" class="record-filter-card">
             <div class="record-filter-field record-search"><label for="supplier">Supplier</label><select id="supplier" name="supplier"><option value="">All Suppliers</option>@foreach ($suppliers as $supplier)<option value="{{ $supplier }}" @selected($filters['supplier'] === $supplier)>{{ $supplier }}</option>@endforeach</select></div>
             <div class="record-filter-field"><label for="invoice_no">Invoice No</label><input id="invoice_no" name="invoice_no" value="{{ $filters['invoice_no'] }}" placeholder="Enter invoice no"></div>

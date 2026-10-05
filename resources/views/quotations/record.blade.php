@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="sales-record-page">
-        <div class="record-titlebar"><div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Quotation Record</h1><p>Search and review saved customer quotations.</p></div></div>
+        <div class="record-titlebar"><div><span class="sales-kicker">3G COMPUTERS</span><h1>Quotation Record</h1><p>Search and review saved customer quotations.</p></div></div>
         <form method="GET" action="{{ route('quotations.record') }}" class="record-filter-card">
             <div class="record-filter-field record-search"><label for="customer">Customer</label><input id="customer" name="customer" value="{{ $filters['customer'] }}" placeholder="Search customer..."></div>
             <div class="record-filter-field"><label for="quotation_no">Quotation No</label><input id="quotation_no" name="quotation_no" value="{{ $filters['quotation_no'] }}" placeholder="Enter quotation no"></div>

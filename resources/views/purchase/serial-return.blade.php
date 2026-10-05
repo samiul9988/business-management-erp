@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="serial-return-page">
-        <div class="serial-return-heading"><div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Serial Purchase Return</h1><p>Find a serialized product by barcode and process its return to supplier.</p></div><div class="invoice-badge"><small>Return no</small><strong>{{ $nextReturn }}</strong></div></div>
+        <div class="serial-return-heading"><div><span class="sales-kicker">3G COMPUTERS</span><h1>Serial Purchase Return</h1><p>Find a serialized product by barcode and process its return to supplier.</p></div><div class="invoice-badge"><small>Return no</small><strong>{{ $nextReturn }}</strong></div></div>
         @if (session('success')) <div class="alert alert-success"><i class="bi bi-check-circle-fill"></i> {{ session('success') }}</div> @endif
         <form method="GET" action="{{ route('purchase.serial-return.create') }}" class="serial-search-box"><label for="serial-search">Serial No:</label><input id="serial-search" name="serial_no" value="{{ $serialNo }}" placeholder="Read Barcode..." autofocus><button type="submit" class="btn btn-secondary">Search</button></form>
         @if ($matchedReturn)<div class="alert alert-warning serial-match"><i class="bi bi-info-circle"></i> This serial was already returned under {{ $matchedReturn->return_no }} on {{ $matchedReturn->return_date->format('d/m/Y') }}.</div>@endif

@@ -10,7 +10,7 @@
     <form method="POST" action="{{ route('sales.entry.store') }}" class="pos-sales-entry" id="sales-entry-form">
         @csrf
         <div class="sales-entry-toolbar">
-            <div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Sales Entry</h1><p>Create a complete retail or wholesale invoice in seconds.</p></div>
+            <div><span class="sales-kicker">3G COMPUTERS</span><h1>Sales Entry</h1><p>Create a complete retail or wholesale invoice in seconds.</p></div>
             <div class="invoice-badge"><small>Invoice no</small><strong>{{ $nextInvoice }}</strong></div>
             <div class="date-field"><label for="sale_date">Date</label><input id="sale_date" name="sale_date" type="date" value="{{ old('sale_date', now()->toDateString()) }}" required></div>
         </div>

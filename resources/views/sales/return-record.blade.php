@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="sales-record-page">
-        <div class="record-titlebar"><div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Sales Return Record</h1><p>Search, review, and print completed sales return transactions.</p></div><button type="button" class="btn btn-light" onclick="window.print()"><i class="bi bi-printer"></i> Print</button></div>
+        <div class="record-titlebar"><div><span class="sales-kicker">3G COMPUTERS</span><h1>Sales Return Record</h1><p>Search, review, and print completed sales return transactions.</p></div><button type="button" class="btn btn-light" onclick="window.print()"><i class="bi bi-printer"></i> Print</button></div>
         <form method="GET" action="{{ route('sales.return-record') }}" class="record-filter-card">
             <div class="record-filter-field record-search"><label for="customer">Customer</label><input id="customer" name="customer" value="{{ $filters['customer'] }}" placeholder="Search customer..."></div>
             <div class="record-filter-field"><label for="invoice_no">Invoice No</label><input id="invoice_no" name="invoice_no" value="{{ $filters['invoice_no'] }}" placeholder="Enter invoice no"></div>

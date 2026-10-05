@@ -10,7 +10,7 @@
     <form method="POST" action="{{ route('sales.service-entry.store') }}" class="pos-sales-entry" id="service-entry-form">
         @csrf
         <div class="sales-entry-toolbar service-entry-toolbar">
-            <div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Service Entry</h1><p>Register repair, installation, and maintenance services with complete customer details.</p></div>
+            <div><span class="sales-kicker">3G COMPUTERS</span><h1>Service Entry</h1><p>Register repair, installation, and maintenance services with complete customer details.</p></div>
             <div class="invoice-badge"><small>Service no</small><strong>{{ $nextInvoice }}</strong></div>
             <div class="date-field"><label for="service_date">Date</label><input id="service_date" name="service_date" type="date" value="{{ old('service_date', now()->toDateString()) }}" required></div>
         </div>

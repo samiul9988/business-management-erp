@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="sales-record-page">
-        <div class="record-titlebar"><div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Repair Record</h1><p>Search, review, and print completed repair jobs.</p></div><button type="button" class="btn btn-light" onclick="window.print()"><i class="bi bi-printer"></i> Print</button></div>
+        <div class="record-titlebar"><div><span class="sales-kicker">3G COMPUTERS</span><h1>Repair Record</h1><p>Search, review, and print completed repair jobs.</p></div><button type="button" class="btn btn-light" onclick="window.print()"><i class="bi bi-printer"></i> Print</button></div>
         <form method="GET" action="{{ route('repair.record') }}" class="record-filter-card">
             <div class="record-filter-field"><label for="status">Status</label><select id="status" name="status"><option value="all" @selected($filters['status'] === 'all')>All</option><option value="pending" @selected($filters['status'] === 'pending')>Pending</option><option value="completed" @selected($filters['status'] === 'completed')>Completed</option><option value="non_completed" @selected($filters['status'] === 'non_completed')>Non-Completed</option><option value="delivered" @selected($filters['status'] === 'delivered')>Delivered</option><option value="transfer" @selected($filters['status'] === 'transfer')>Transfer</option><option value="received" @selected($filters['status'] === 'received')>Received</option></select></div>
             <div class="record-filter-field record-search"><label for="customer">Customer</label><input id="customer" name="customer" value="{{ $filters['customer'] }}" placeholder="Search here..."></div>

@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="sales-record-page">
-        <div class="record-titlebar"><div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Sales Record</h1><p>Search, review, and print completed sales transactions.</p></div><button type="button" class="btn btn-light" onclick="window.print()"><i class="bi bi-printer"></i> Print</button></div>
+        <div class="record-titlebar"><div><span class="sales-kicker">3G COMPUTERS</span><h1>Sales Record</h1><p>Search, review, and print completed sales transactions.</p></div><button type="button" class="btn btn-light" onclick="window.print()"><i class="bi bi-printer"></i> Print</button></div>
         <form method="GET" action="{{ route('sales.record') }}" class="record-filter-card">
             <div class="record-filter-field"><label for="search_type">Search Type</label><select id="search_type" name="search_type"><option value="all" @selected($filters['search_type'] === 'all')>All</option><option value="customer" @selected($filters['search_type'] === 'customer')>By Customer</option><option value="invoice" @selected($filters['search_type'] === 'invoice')>By Invoice</option></select></div>
             <div class="record-filter-field"><label for="record_type">Record Type</label><select id="record_type" name="record_type"><option value="without_details" @selected($filters['record_type'] === 'without_details')>Without Details</option><option value="with_details" @selected($filters['record_type'] === 'with_details')>With Details</option></select></div>

@@ -10,7 +10,7 @@
     <form method="POST" action="{{ route('repair.entry.store') }}" class="pos-sales-entry" id="repair-entry-form">
         @csrf
         <div class="sales-entry-toolbar">
-            <div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Repair Entry</h1><p>Log a device repair job with parts and billing details.</p></div>
+            <div><span class="sales-kicker">3G COMPUTERS</span><h1>Repair Entry</h1><p>Log a device repair job with parts and billing details.</p></div>
             <div class="invoice-badge"><small>Invoice no</small><strong>{{ $nextInvoice }}</strong></div>
             <div class="date-field"><label for="repair_date">Date</label><input id="repair_date" name="repair_date" type="date" value="{{ old('repair_date', now()->toDateString()) }}" required></div>
         </div>

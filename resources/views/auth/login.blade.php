@@ -74,7 +74,7 @@
             width: 0;
             animation: typing 2.6s steps(38, end) forwards, blink .75s step-end infinite;
         }
-        @keyframes typing { from { width: 0; } to { width: 38ch; } }
+        @keyframes typing { from { width: 0; } to { width: 44ch; } }
         @keyframes blink { 50% { border-color: transparent; } }
 
         .auth-card {
@@ -210,7 +210,7 @@
     <span class="glow-dot d4"></span>
     <span class="glow-dot d5"></span>
 
-    <h1 class="login-headline"><span class="typewriter">Welcome to Online POS Accounting Software</span></h1>
+    <h1 class="login-headline"><span class="typewriter">Welcome to 3G Computers Accounting Software</span></h1>
 
     <div class="auth-card">
         <div class="auth-brand-panel">

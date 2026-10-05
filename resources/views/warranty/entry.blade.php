@@ -10,7 +10,7 @@
     <form method="POST" action="{{ route('warranty.entry.store') }}" class="pos-sales-entry" id="warranty-entry-form">
         @csrf
         <div class="sales-entry-toolbar">
-            <div><span class="sales-kicker">AK COMPUTER, CCTV & LAPTOP</span><h1>Warranty Entry</h1><p>Track a warranty claim from intake through delivery.</p></div>
+            <div><span class="sales-kicker">3G COMPUTERS</span><h1>Warranty Entry</h1><p>Track a warranty claim from intake through delivery.</p></div>
             <div class="invoice-badge"><small>Invoice no</small><strong>{{ $nextInvoice }}</strong></div>
             <div class="date-field"><label for="warranty_date">Date</label><input id="warranty_date" name="warranty_date" type="date" value="{{ old('warranty_date', now()->toDateString()) }}" required></div>
         </div>
