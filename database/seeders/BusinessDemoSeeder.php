@@ -256,9 +256,9 @@ class BusinessDemoSeeder extends Seeder
         CompanyProfile::firstOrCreate(['name' => 'AK Computer, CCTV & Laptop'], [
             'description' => 'Sales and service center for computers, laptops, and CCTV surveillance systems.',
             'branch_name' => 'Main Branch',
-            'branch_title' => 'AK Computer, CCTV & Laptop - Dhanmondi Branch',
+            'branch_title' => 'AK Computer, CCTV & Laptop - Banarupa Branch',
             'invoice_print_type' => 'a4',
-            'branch_address' => 'House 12, Road 5, Dhanmondi, Dhaka-1205',
+            'branch_address' => 'ShopNo# ICR Shopping Plaza (2nd Floor), Banarupa, Rangamati',
             'invoice_header' => 'Thank you for choosing AK Computer, CCTV & Laptop',
             'invoice_footer' => 'Goods once sold cannot be returned without receipt.',
         ]);
