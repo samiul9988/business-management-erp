@@ -53,10 +53,11 @@
         .copy-toast.show { opacity: 1; }
         .share-link-footer { margin-top: 14px; font-size: 10px; color: #555; background: rgba(255, 255, 255, .8); display: inline-block; }
         .share-link-footer a { color: #1769ed; }
+        @page { size: A4; margin: 0; }
         @media print {
             body { background: #fff; padding: 0; }
             .invoice-actions { display: none; }
-            .invoice-sheet { width: auto; min-height: 0; }
+            .invoice-sheet { width: 794px; min-height: 1123px; margin: 0; }
         }
     </style>
 </head>

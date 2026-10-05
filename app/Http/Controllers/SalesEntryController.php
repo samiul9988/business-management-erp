@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Sale;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Http\RedirectResponse;
@@ -45,13 +46,42 @@ class SalesEntryController extends Controller
             $discount = round((float) ($validated['discount'] ?? 0) + $items->sum('discount_amount'), 2);
             $total = round($subtotal + (float) ($validated['vat'] ?? 0) + (float) ($validated['transport_cost'] ?? 0) - $discount, 2);
             $paid = round((float) ($validated['paid'] ?? 0), 2);
-            $sale = Sale::create([...$validated, 'user_id' => $request->user()->id, 'invoice_no' => $this->nextInvoiceNumber(), 'subtotal' => $subtotal, 'discount' => $discount, 'total' => max($total, 0), 'paid' => $paid, 'due' => max($total - $paid, 0)]);
+            $customerId = $this->findOrCreateCustomer($validated)?->id;
+            $sale = Sale::create([...$validated, 'user_id' => $request->user()->id, 'customer_id' => $customerId, 'invoice_no' => $this->nextInvoiceNumber(), 'subtotal' => $subtotal, 'discount' => $discount, 'total' => max($total, 0), 'paid' => $paid, 'due' => max($total - $paid, 0)]);
             $sale->items()->createMany($items->all());
 
             return $sale;
         });
 
         return redirect()->route('sales.entry.create')->with('success', "Sale {$sale->invoice_no} saved successfully.");
+    }
+
+    private function findOrCreateCustomer(array $validated): ?Customer
+    {
+        if (! empty($validated['customer_mobile'])) {
+            $customer = Customer::where('mobile', $validated['customer_mobile'])->first();
+
+            if ($customer) {
+                return $customer;
+            }
+        }
+
+        if (empty($validated['customer_name']) || $validated['customer_name'] === 'Cash Customer') {
+            return null;
+        }
+
+        $lastCode = Customer::query()->latest('id')->value('customer_code');
+        $nextCode = (string) ($lastCode ? ((int) $lastCode + 1) : 1001);
+
+        return Customer::create([
+            'customer_code' => $nextCode,
+            'mobile' => $validated['customer_mobile'] ?? null,
+            'name' => $validated['customer_name'],
+            'address' => $validated['customer_address'] ?? null,
+            'previous_due' => 0,
+            'credit_limit' => 0,
+            'customer_type' => $validated['sale_type'] === 'wholesale' ? 'wholesale' : 'regular',
+        ]);
     }
 
     private function nextInvoiceNumber(): string

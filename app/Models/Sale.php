@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class Sale extends Model
 {
-    protected $fillable = ['user_id', 'invoice_no', 'share_token', 'sale_type', 'customer_name', 'customer_mobile', 'customer_address', 'sale_date', 'subtotal', 'vat', 'discount', 'transport_cost', 'total', 'paid', 'due'];
+    protected $fillable = ['user_id', 'customer_id', 'invoice_no', 'share_token', 'sale_type', 'customer_name', 'customer_mobile', 'customer_address', 'sale_date', 'subtotal', 'vat', 'discount', 'transport_cost', 'total', 'paid', 'due'];
 
     protected function casts(): array
     {
@@ -40,5 +40,10 @@ class Sale extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

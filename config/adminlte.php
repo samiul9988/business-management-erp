@@ -85,7 +85,7 @@ return [
     |
     */
 
-    'logo' => '<span class="pos-sidebar-logo-icon"><i class="bi bi-cart3"></i></span><span>POS <b>Express</b></span>',
+    'logo' => '<img src="/images/brand-icon-wide.png" alt="3G Computers" class="pos-sidebar-brand-logo">',
     'logo_img' => 'vendor/adminlte/dist/assets/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image opacity-75 shadow',
     'logo_img_xl' => null,
