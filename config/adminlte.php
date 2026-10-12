@@ -900,6 +900,7 @@ return [
                 ['text' => 'Unit Entry', 'route' => 'unit.index', 'icon' => 'bi bi-rulers'],
                 ['text' => 'Area Entry', 'route' => 'area.index', 'icon' => 'bi bi-geo-alt'],
                 ['text' => 'Company Profile', 'route' => 'company-profile.edit', 'icon' => 'bi bi-building'],
+                ['text' => 'Site Maintenance', 'route' => 'maintenance.show', 'icon' => 'bi bi-toggle-on'],
             ],
         ],
         ['text' => 'Business Monitor', 'route' => 'business-monitor.index', 'icon' => 'bi bi-activity'],

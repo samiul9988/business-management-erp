@@ -27,6 +27,7 @@ use App\Http\Controllers\InvestmentAccountController;
 use App\Http\Controllers\InvestmentTransactionController;
 use App\Http\Controllers\LoanAccountController;
 use App\Http\Controllers\LoanTransactionController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\MonthController;
 use App\Http\Controllers\CashViewController;
@@ -85,6 +86,12 @@ Route::get('/dashboard', function () {
 
 Route::get('/search', [SmartSearchController::class, 'search'])->middleware('auth')->name('search');
 Route::get('/modules/{slug}', [ModuleController::class, 'show'])->middleware('auth')->name('modules.show');
+
+Route::middleware('auth')->prefix('dashboard/activation')->group(function () {
+    Route::get('/', [MaintenanceController::class, 'show'])->name('maintenance.show');
+    Route::post('/toggle', [MaintenanceController::class, 'toggle'])->name('maintenance.toggle');
+    Route::get('/preview', [MaintenanceController::class, 'preview'])->name('maintenance.preview');
+});
 
 Route::middleware('auth')->prefix('sales')->name('sales.')->group(function () {
     Route::get('/entry', [SalesEntryController::class, 'create'])->name('entry.create');
