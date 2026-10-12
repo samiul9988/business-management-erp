@@ -23,15 +23,18 @@
                     </span>
                     <p class="maintenance-status-desc">
                         @if ($active)
-                            Visitors currently see the maintenance page instead of the application. Only you can still sign in and reach this screen.
+                            Visitors currently see the maintenance page instead of the application. This screen and the login page stay reachable so you can always switch it back off.
                         @else
                             Everyone can use the site normally right now.
                         @endif
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('maintenance.toggle') }}">
+                <form method="POST" action="{{ route('maintenance.toggle', $key ? ['key' => $key] : []) }}">
                     @csrf
+                    @if ($key)
+                        <input type="hidden" name="key" value="{{ $key }}">
+                    @endif
                     <button type="submit" class="maintenance-toggle-switch {{ $active ? 'is-on' : '' }}" aria-pressed="{{ $active ? 'true' : 'false' }}">
                         <span class="maintenance-toggle-knob"></span>
                     </button>
@@ -43,6 +46,13 @@
                     <i class="bi bi-eye"></i> Preview the maintenance page
                 </a>
             </div>
+
+            @unless (auth()->check())
+                <div class="maintenance-bookmark-note">
+                    <i class="bi bi-bookmark-star"></i>
+                    Bookmark this exact page URL (with the <code>?key=...</code> in it) — it's the only way back in without logging in.
+                </div>
+            @endunless
         </section>
     </div>
 @stop

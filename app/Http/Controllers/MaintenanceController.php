@@ -9,10 +9,11 @@ use Illuminate\View\View;
 
 class MaintenanceController extends Controller
 {
-    public function show(): View
+    public function show(Request $request): View
     {
         return view('dashboard.activation', [
             'active' => app()->isDownForMaintenance(),
+            'key' => $request->query('key'),
         ]);
     }
 
@@ -31,7 +32,8 @@ class MaintenanceController extends Controller
             $status = 'Maintenance mode is now on — visitors will see the maintenance page.';
         }
 
-        return redirect()->route('maintenance.show')->with('status', $status);
+        return redirect()->route('maintenance.show', $request->filled('key') ? ['key' => $request->input('key')] : [])
+            ->with('status', $status);
     }
 
     public function preview(): View

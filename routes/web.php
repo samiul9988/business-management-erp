@@ -87,7 +87,7 @@ Route::get('/dashboard', function () {
 Route::get('/search', [SmartSearchController::class, 'search'])->middleware('auth')->name('search');
 Route::get('/modules/{slug}', [ModuleController::class, 'show'])->middleware('auth')->name('modules.show');
 
-Route::middleware('auth')->prefix('dashboard/activation')->group(function () {
+Route::middleware(\App\Http\Middleware\AllowActivationAccess::class)->prefix('dashboard/activation')->group(function () {
     Route::get('/', [MaintenanceController::class, 'show'])->name('maintenance.show');
     Route::post('/toggle', [MaintenanceController::class, 'toggle'])->name('maintenance.toggle');
     Route::get('/preview', [MaintenanceController::class, 'preview'])->name('maintenance.preview');

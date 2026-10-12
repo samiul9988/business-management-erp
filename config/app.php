@@ -123,4 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    // Lets /dashboard/activation be reached without a login, guarded by this
+    // secret instead, so maintenance mode can always be switched off.
+    'activation_secret' => env('ACTIVATION_SECRET'),
+
 ];
