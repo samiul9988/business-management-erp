@@ -108,6 +108,8 @@ Route::middleware('auth')->prefix('sales')->name('sales.')->group(function () {
     Route::get('/serial-history', [SerialHistoryController::class, 'index'])->name('serial-history');
     Route::get('/invoice', [SalesInvoiceController::class, 'index'])->name('invoice');
     Route::get('/record/{sale}/invoice', [SalesInvoiceController::class, 'show'])->name('record.invoice');
+    Route::get('/record/{sale}/edit', [SalesEntryController::class, 'edit'])->name('record.edit');
+    Route::put('/record/{sale}', [SalesEntryController::class, 'update'])->name('record.update');
     Route::get('/top-customers', [TopCustomerController::class, 'index'])->name('top-customers');
     Route::get('/employee-sales', [EmployeeSalesController::class, 'index'])->name('employee-sales');
     Route::get('/price-list', [PriceListController::class, 'index'])->name('price-list');
