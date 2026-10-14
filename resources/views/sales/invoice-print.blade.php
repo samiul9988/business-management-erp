@@ -18,7 +18,10 @@
         }
         .invoice-content { position: relative; padding: 148px 52px 110px; }
 
-        h1.invoice-title { text-align: center; font-size: 19px; margin: 0 0 16px; letter-spacing: .03em; }
+        .invoice-rule { border: 0; border-top: 3px double #000; margin: 0 0 3px; }
+        .invoice-rule-thin { border: 0; border-top: 1px dashed #000; margin: 0; }
+        .invoice-rule-thin.below { margin: 10px 0 14px; }
+        h1.invoice-title { text-align: center; font-size: 19px; margin: 10px 0 0; letter-spacing: .03em; }
         .invoice-meta { display: flex; justify-content: space-between; gap: 2rem; margin-bottom: 14px; }
         .invoice-meta div p { margin: 2px 0; }
         .meta-right-table { border-collapse: collapse; margin-left: auto; }
@@ -44,6 +47,12 @@
         .qr-block img { width: 110px; height: 110px; }
         .signatures { display: flex; justify-content: space-between; margin-top: 24px; }
         .signatures span { display: inline-block; border-top: 1px solid #000; padding-top: 4px; min-width: 160px; text-align: center; background: rgba(255, 255, 255, .8); }
+        .invoice-policy { margin-top: 18px; font-size: 10.5px; line-height: 1.55; background: rgba(255, 255, 255, .88); }
+        .invoice-policy-top { display: flex; border: 1px solid #000; }
+        .invoice-policy-top > div { flex: 1; padding: 6px 9px; }
+        .invoice-policy-top > div:first-child { border-right: 1px solid #000; }
+        .invoice-policy-top strong { font-weight: 700; }
+        .invoice-policy-bottom { padding: 6px 9px; border: 1px solid #000; border-top: 0; }
         .invoice-actions { width: 794px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
         .invoice-actions button { padding: .5rem 1.1rem; border: 0; border-radius: 4px; background: #1769ed; color: #fff; font-size: .85rem; cursor: pointer; }
         .share-link-bar { display: flex; align-items: center; gap: .5rem; font-size: .8rem; }
@@ -76,7 +85,10 @@
 
     <div class="invoice-sheet">
         <div class="invoice-content">
+            <hr class="invoice-rule">
+            <hr class="invoice-rule-thin">
             <h1 class="invoice-title">Sales Invoice</h1>
+            <hr class="invoice-rule-thin below">
 
             <div class="invoice-meta">
                 <div>
@@ -164,6 +176,24 @@
             <div class="signatures">
                 <span>Received by</span>
                 <span>Authorized by</span>
+            </div>
+
+            <div class="invoice-policy">
+                <div class="invoice-policy-top">
+                    <div>
+                        ওয়ারেন্টি বা বিক্রয়োত্তর সেবা সম্পর্কে জেনে পণ্য ক্রয় করুন।<br>
+                        পণ্যের নিরাপত্তায় বর্ষায়/বজ্রপাতে বৈদ্যুতিক লাইন খুলে রাখুন।
+                    </div>
+                    <div>
+                        <strong>Bkash Payment- 01732927894</strong><br>
+                        <strong>Bkash, Nagad, Rocket Send Money (Personal)- 01818824881</strong>
+                    </div>
+                </div>
+                <div class="invoice-policy-bottom">
+                    Warranty void: sticker removed items, Burned case and physically damaged goods. No warranty for Mouse, Keyboard, Speaker, Power Supply, Adapter, Remote, Printer head, Toner Cartridge, Belt &amp; Any kinds of Repaired item.<br>
+                    স্টিকার মুছা/নষ্ট করা, বজ্রপাত/আগুনে পোড়া, ইচ্ছাকৃতভাবে পণ্য নষ্ট করা, ভাঙা বিক্রয়ে সবার আওতায় পড়বে না।<br>
+                    CCTV CAMERA, Laptop, PBX Solution, Laptop Servicing, Computer Hardware &amp; Networking Product
+                </div>
             </div>
 
             <p class="share-link-footer">View this invoice online: <a href="{{ $shareUrl }}">{{ $shareUrl }}</a></p>
