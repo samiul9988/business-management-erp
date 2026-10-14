@@ -210,12 +210,12 @@
     <span class="glow-dot d4"></span>
     <span class="glow-dot d5"></span>
 
-    <h1 class="login-headline"><span class="typewriter">Welcome to 3G Computers Accounting Software</span></h1>
+    <h1 class="login-headline"><span class="typewriter">Welcome to 3G Computers Accounting</span></h1>
 
     <div class="auth-card">
         <div class="auth-brand-panel">
             <div class="auth-logo-badge" aria-hidden="true">
-                <img src="{{ asset('images/brand-icon.png') }}" alt="">
+                <img src="{{ asset('images/brand-icon-wide.png') }}" alt="3G Computers">
             </div>
 
             <h1>{{ $companyName }}</h1>

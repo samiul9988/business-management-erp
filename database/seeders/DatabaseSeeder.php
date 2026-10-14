@@ -24,10 +24,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::updateOrCreate(
-            ['email' => 'admin@akpos.test'],
+            ['email' => '3gcomputers1@gmail.com'],
             [
-                'name' => 'AK POS Admin',
-                'password' => Hash::make('password'),
+                'name' => '3G Computers Admin',
+                'password' => Hash::make('admin5680'),
                 'email_verified_at' => now(),
             ]
         );
