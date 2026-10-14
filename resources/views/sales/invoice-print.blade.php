@@ -8,15 +8,16 @@
         body { margin: 0; padding: 24px; background: #e9e9e9; font-family: Arial, Helvetica, sans-serif; color: #111; font-size: 13px; }
 
         .invoice-sheet {
-            position: relative;
+            display: flex;
+            flex-direction: column;
             width: 794px;
             min-height: 1123px;
             margin: 0 auto;
-            background: #fff url('{{ asset('images/invoice-letterhead.png') }}') no-repeat top center / 794px 1123px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            background: #fff;
         }
-        .invoice-content { position: relative; padding: 132px 52px 95px; }
+        .invoice-header-img, .invoice-footer-img { display: block; width: 100%; height: auto; flex: 0 0 auto; }
+        .invoice-footer-img { margin-top: auto; }
+        .invoice-content { position: relative; padding: 10px 52px; flex: 0 0 auto; }
 
         .invoice-rule { border: 0; border-top: 3px double #000; margin: 0 0 3px; }
         .invoice-rule-thin { border: 0; border-top: 1px dashed #000; margin: 0; }
@@ -66,7 +67,7 @@
         @media print {
             body { background: #fff; padding: 0; }
             .invoice-actions { display: none; }
-            .invoice-sheet { width: 794px; min-height: 1123px; margin: 0; }
+            .invoice-sheet { width: auto; margin: 0; }
         }
     </style>
 </head>
@@ -84,6 +85,7 @@
     </div>
 
     <div class="invoice-sheet">
+        <img src="{{ asset('images/invoice-header.png') }}" alt="" class="invoice-header-img">
         <div class="invoice-content">
             <hr class="invoice-rule">
             <hr class="invoice-rule-thin">
@@ -198,6 +200,7 @@
 
             <p class="share-link-footer">View this invoice online: <a href="{{ $shareUrl }}">{{ $shareUrl }}</a></p>
         </div>
+        <img src="{{ asset('images/invoice-footer.png') }}" alt="" class="invoice-footer-img">
     </div>
 
     @if (request()->boolean('print'))
