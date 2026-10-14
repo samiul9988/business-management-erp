@@ -16,7 +16,7 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        .invoice-content { position: relative; padding: 148px 52px 110px; }
+        .invoice-content { position: relative; padding: 132px 52px 95px; }
 
         .invoice-rule { border: 0; border-top: 3px double #000; margin: 0 0 3px; }
         .invoice-rule-thin { border: 0; border-top: 1px dashed #000; margin: 0; }
@@ -29,7 +29,7 @@
         .meta-right-table td.meta-label { text-align: left; padding-right: 6px; }
         .meta-right-table td.meta-value { text-align: left; width: 100%; }
         table.items-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        table.items-table th, table.items-table td { border: 1px solid #000; padding: 5px 7px; font-size: 12.5px; }
+        table.items-table th, table.items-table td { border: 1px solid #000; padding: 3px 7px; font-size: 12px; }
         table.items-table th { background: rgba(243, 243, 243, .85); text-align: left; }
         table.items-table td { background: rgba(255, 255, 255, .78); }
         table.items-table td.num, table.items-table th.num { text-align: right; }
@@ -43,16 +43,16 @@
         .totals-table td.value { text-align: right; font-variant-numeric: tabular-nums; }
         .totals-table tr.rule td { border-top: 1px solid #000; padding-top: 6px; }
         .totals-table tr.grand td, .totals-table tr.net td { font-weight: bold; }
-        .qr-block { text-align: center; margin: 28px 0 24px; }
-        .qr-block img { width: 110px; height: 110px; }
-        .signatures { display: flex; justify-content: space-between; margin-top: 24px; }
+        .qr-block { text-align: center; margin: 12px 0 10px; }
+        .qr-block img { width: 86px; height: 86px; }
+        .signatures { display: flex; justify-content: space-between; margin-top: 12px; }
         .signatures span { display: inline-block; border-top: 1px solid #000; padding-top: 4px; min-width: 160px; text-align: center; background: rgba(255, 255, 255, .8); }
-        .invoice-policy { margin-top: 18px; font-size: 10.5px; line-height: 1.55; background: rgba(255, 255, 255, .88); }
+        .invoice-policy { margin-top: 10px; font-size: 9.5px; line-height: 1.4; background: rgba(255, 255, 255, .88); }
         .invoice-policy-top { display: flex; border: 1px solid #000; }
-        .invoice-policy-top > div { flex: 1; padding: 6px 9px; }
+        .invoice-policy-top > div { flex: 1; padding: 4px 8px; }
         .invoice-policy-top > div:first-child { border-right: 1px solid #000; }
         .invoice-policy-top strong { font-weight: 700; }
-        .invoice-policy-bottom { padding: 6px 9px; border: 1px solid #000; border-top: 0; }
+        .invoice-policy-bottom { padding: 4px 8px; border: 1px solid #000; border-top: 0; }
         .invoice-actions { width: 794px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
         .invoice-actions button { padding: .5rem 1.1rem; border: 0; border-radius: 4px; background: #1769ed; color: #fff; font-size: .85rem; cursor: pointer; }
         .share-link-bar { display: flex; align-items: center; gap: .5rem; font-size: .8rem; }
@@ -60,7 +60,7 @@
         .share-link-bar button { padding: .35rem .6rem; border: 1px solid #1769ed; border-radius: 4px; background: #fff; color: #1769ed; font-size: .78rem; cursor: pointer; }
         .copy-toast { font-size: .78rem; color: #1a9d53; font-weight: 600; opacity: 0; transition: opacity .2s ease; }
         .copy-toast.show { opacity: 1; }
-        .share-link-footer { margin-top: 14px; font-size: 10px; color: #555; background: rgba(255, 255, 255, .8); display: inline-block; }
+        .share-link-footer { margin-top: 6px; font-size: 9px; color: #555; background: rgba(255, 255, 255, .8); display: inline-block; }
         .share-link-footer a { color: #1769ed; }
         @page { size: A4; margin: 0; }
         @media print {
