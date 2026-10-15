@@ -21,13 +21,17 @@
                     <div class="employee-field"><label>Employee Name</label><span>:</span><input name="name" placeholder="Employee Name .." required value="{{ old('name') }}"></div>
                     <div class="employee-field">
                         <label>Designation</label><span>:</span>
-                        <select name="designation_id"><option value="">Choose a Designation...</option>@foreach ($designations as $designation)<option value="{{ $designation->id }}" @selected(old('designation_id') == $designation->id)>{{ $designation->name }}</option>@endforeach</select>
-                        <a href="{{ route('designation.index') }}" target="_blank" class="employee-quick-add" title="Add new designation"><i class="bi bi-plus-lg"></i></a>
+                        <div class="employee-input-group">
+                            <select name="designation_id"><option value="">Choose a Designation...</option>@foreach ($designations as $designation)<option value="{{ $designation->id }}" @selected(old('designation_id') == $designation->id)>{{ $designation->name }}</option>@endforeach</select>
+                            <a href="{{ route('designation.index') }}" target="_blank" class="employee-quick-add" title="Add new designation"><i class="bi bi-plus-lg"></i></a>
+                        </div>
                     </div>
                     <div class="employee-field">
                         <label>Department</label><span>:</span>
-                        <select name="department_id"><option value="">Choose a Department...</option>@foreach ($departments as $department)<option value="{{ $department->id }}" @selected(old('department_id') == $department->id)>{{ $department->name }}</option>@endforeach</select>
-                        <a href="{{ route('department.index') }}" target="_blank" class="employee-quick-add" title="Add new department"><i class="bi bi-plus-lg"></i></a>
+                        <div class="employee-input-group">
+                            <select name="department_id"><option value="">Choose a Department...</option>@foreach ($departments as $department)<option value="{{ $department->id }}" @selected(old('department_id') == $department->id)>{{ $department->name }}</option>@endforeach</select>
+                            <a href="{{ route('department.index') }}" target="_blank" class="employee-quick-add" title="Add new department"><i class="bi bi-plus-lg"></i></a>
+                        </div>
                     </div>
                     <div class="employee-field"><label>Joint Date</label><span>:</span><input name="join_date" type="date" value="{{ old('join_date', now()->toDateString()) }}"></div>
                     <div class="employee-field"><label>Salary Range</label><span>:</span><input name="salary_range" type="number" step=".01" min="0" placeholder="Salary Range .." value="{{ old('salary_range', 0) }}"></div>
