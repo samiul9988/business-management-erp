@@ -39,9 +39,7 @@
 
                 <div class="sales-card-heading product-heading"><h2><i class="bi bi-box-seam"></i> Add Products</h2></div>
                 <div class="product-staging-grid">
-                    <div class="mfs-check stage-by-serial-cell"><label><input type="checkbox" id="stage_by_serial"> By Serial</label></div>
-
-                    <div class="combo-field product-combo" id="product-field-wrap">
+                    <div class="combo-field product-combo wide-field" id="product-field-wrap">
                         <label>Product</label>
                         <div class="combo-input-group">
                             <input type="text" id="product_search" autocomplete="off" placeholder="Select Product" value="{{ $searchedBarcode }}">
@@ -50,7 +48,7 @@
                         <ul class="combo-dropdown" id="product-dropdown"></ul>
                     </div>
 
-                    <div class="combo-field product-combo" id="serial-field-wrap" style="display:none">
+                    <div class="combo-field product-combo wide-field" id="serial-field-wrap" style="display:none">
                         <label>Serial</label>
                         <div class="combo-input-group">
                             <input type="text" id="serial_search" autocomplete="off" placeholder="Select Serial">
@@ -62,6 +60,9 @@
                     <div><label>Qty</label><input type="number" id="stage_qty" step=".01" min=".01" value="1"></div>
                     <div><label>Amount</label><output id="stage_amount">0.00</output></div>
                     <div><label>Warranty (Days)</label><input type="number" id="stage_warranty" min="0" value="0"></div>
+
+                    <div class="mfs-check stage-by-serial-cell full-row"><label><input type="checkbox" id="stage_by_serial"> By Serial</label></div>
+
                     <div><label>Discount %</label><input type="number" id="stage_discount" min="0" max="100" step=".01" value="0"></div>
                     <div class="stage-add-cell"><button type="button" class="btn btn-primary" id="add-to-cart-btn"><i class="bi bi-cart-plus"></i> Add to Cart</button></div>
                 </div>

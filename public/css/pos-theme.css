@@ -125,7 +125,8 @@ body { font-family: "Source Sans 3", "Segoe UI", sans-serif; color: var(--pos-te
 .combo-dropdown.show { display: block; }
 .combo-dropdown li { padding: .45rem .7rem; font-size: .8rem; color: #1e3655; cursor: pointer; }
 .combo-dropdown li:hover { background: #eef9fc; }
-.product-staging-grid { display: grid; grid-template-columns: minmax(0,2fr) 1fr 1fr 1fr 1fr 1fr; gap: .65rem .8rem; padding: 0 1rem 1rem; align-items: end; }
+.product-staging-grid { display: grid; grid-template-columns: minmax(0,2.6fr) 1fr 1fr 1fr 1fr; gap: .7rem .9rem; padding: 1.1rem 1rem 1rem; align-items: end; }
+.product-staging-grid .wide-field input { min-width: 0; }
 .product-staging-grid label { display: block; margin-bottom: .3rem; color: #315273; font-size: .76rem; font-weight: 600; }
 .product-staging-grid input, .product-staging-grid output { width: 100%; padding: .42rem .55rem; border: 1px solid #cad8e5; border-radius: 4px; background: rgba(255,255,255,.9); color: #1e3655; font-size: .8rem; box-sizing: border-box; }
 .product-staging-grid output { display: block; background: #eef4f8; text-align: right; }
@@ -135,10 +136,10 @@ body { font-family: "Source Sans 3", "Segoe UI", sans-serif; color: var(--pos-te
 .amount-pair { display: grid; grid-template-columns: 1fr 1.4fr; gap: .4rem; }
 .mfs-check { display: flex; align-items: center; gap: .4rem; font-weight: 400 !important; font-size: .8rem !important; }
 .mfs-check input { width: auto !important; }
-@media (max-width: 900px) { .product-staging-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 900px) { .product-staging-grid { grid-template-columns: 1fr 1fr; }.product-staging-grid .wide-field { grid-column: 1 / -1; } }
 .sales-items-table .item-serials { min-width: 140px; resize: vertical; }
 .sales-items-table .item-serials:disabled { background: #eef1f4; color: #93a1ba; }
 .by-serial-cell { text-align: center; }
 .by-serial-cell input { width: auto !important; }
-.stage-by-serial-cell { display: flex; align-items: end; padding-bottom: .55rem; }
+.stage-by-serial-cell.full-row { grid-column: 1 / -1; padding: 0; }
 .cart-serial { display: block; color: #7890a4; font-size: .7rem; }
