@@ -136,3 +136,11 @@ body { font-family: "Source Sans 3", "Segoe UI", sans-serif; color: var(--pos-te
 .mfs-check { display: flex; align-items: center; gap: .4rem; font-weight: 400 !important; font-size: .8rem !important; }
 .mfs-check input { width: auto !important; }
 @media (max-width: 900px) { .product-staging-grid { grid-template-columns: 1fr 1fr; } }
+.sales-items-table .item-serials { min-width: 140px; resize: vertical; }
+.sales-items-table .item-serials:disabled { background: #eef1f4; color: #93a1ba; }
+.by-serial-cell { text-align: center; }
+.by-serial-cell input { width: auto !important; }
+.stage-serial-field { display: none; }
+.stage-serial-field.show { display: block; }
+.stage-serial-field select:disabled { background: #eef1f4; color: #93a1ba; }
+.cart-serial { display: block; color: #7890a4; font-size: .7rem; }

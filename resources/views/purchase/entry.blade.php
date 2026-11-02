@@ -26,7 +26,7 @@
                     <div class="customer-address"><label for="supplier_address">Address</label><textarea id="supplier_address" name="supplier_address" rows="2">{{ old('supplier_address') }}</textarea></div>
                 </div>
                 <div class="sales-card-heading product-heading"><h2><i class="bi bi-box-seam"></i> Add Products</h2><button type="button" class="btn btn-sm btn-outline-primary" id="add-item"><i class="bi bi-plus-lg"></i> Add Product</button></div>
-                <div class="sales-table-wrap"><table class="sales-items-table"><thead><tr><th>Code</th><th>Product Name *</th><th>Warranty (Days)</th><th>Qty *</th><th>Rate *</th><th>Total</th><th></th></tr></thead><tbody id="purchase-items"><tr class="sale-item-row"><td><input name="items[0][product_code]" placeholder="SKU"></td><td><input name="items[0][product_name]" placeholder="Product name" required></td><td><input name="items[0][warranty_days]" type="number" min="0" placeholder="0"></td><td><input name="items[0][quantity]" class="item-quantity" type="number" min=".01" step=".01" value="1" required></td><td><input name="items[0][rate]" class="item-rate" type="number" min="0" step=".01" value="0" required></td><td><output class="item-total">0.00</output></td><td><button type="button" class="remove-item" aria-label="Remove item"><i class="bi bi-trash3"></i></button></td></tr></tbody></table></div>
+                <div class="sales-table-wrap"><table class="sales-items-table"><thead><tr><th>Code</th><th>Product Name *</th><th>Warranty (Days)</th><th>By Serial</th><th>Serial Numbers</th><th>Qty *</th><th>Rate *</th><th>Total</th><th></th></tr></thead><tbody id="purchase-items"><tr class="sale-item-row"><td><input name="items[0][product_code]" placeholder="SKU"></td><td><input name="items[0][product_name]" placeholder="Product name" required></td><td><input name="items[0][warranty_days]" type="number" min="0" placeholder="0"></td><td class="by-serial-cell"><input type="checkbox" class="by-serial-toggle"></td><td><textarea name="items[0][serials]" class="item-serials" rows="1" placeholder="One serial per line" disabled></textarea></td><td><input name="items[0][quantity]" class="item-quantity" type="number" min=".01" step=".01" value="1" required></td><td><input name="items[0][rate]" class="item-rate" type="number" min="0" step=".01" value="0" required></td><td><output class="item-total">0.00</output></td><td><button type="button" class="remove-item" aria-label="Remove item"><i class="bi bi-trash3"></i></button></td></tr></tbody></table></div>
                 <div class="sales-entry-footer"><span><i class="bi bi-shield-check"></i> Stock and invoice details are saved securely.</span><button class="btn btn-primary btn-lg" type="submit"><i class="bi bi-receipt"></i> Save Purchase</button></div>
             </section>
             <aside class="sales-entry-card amount-card"><div class="sales-card-heading"><h2><i class="bi bi-calculator"></i> Amount Details</h2></div><div class="amount-fields"><label>Sub Total <output id="subtotal">0.00</output></label><label>VAT <input name="vat" id="vat" type="number" min="0" step=".01" value="{{ old('vat', 0) }}"></label><label>Discount <input name="discount" id="discount" type="number" min="0" step=".01" value="{{ old('discount', 0) }}"></label><label>Transport / Labour Cost <input name="transport_cost" id="transport_cost" type="number" min="0" step=".01" value="{{ old('transport_cost', 0) }}"></label><label class="total-field">Total <output id="total">0.00</output></label><label>Cash Paid <input name="paid" id="paid" type="number" min="0" step=".01" value="{{ old('paid', 0) }}"></label><label class="due-field">Due <output id="due">0.00</output></label></div><div class="amount-note"><i class="bi bi-info-circle"></i> Due amount is calculated automatically.</div></aside>
@@ -52,12 +52,30 @@
         document.querySelector('#total').textContent = money(total);
         document.querySelector('#due').textContent = money(Math.max(0, total - Number(document.querySelector('#paid').value || 0)));
     };
+    const syncSerialMode = row => {
+        const toggle = row.querySelector('.by-serial-toggle');
+        const textarea = row.querySelector('.item-serials');
+        const qty = row.querySelector('.item-quantity');
+        textarea.disabled = !toggle.checked;
+        qty.readOnly = toggle.checked;
+        if (!toggle.checked) { textarea.value = ''; }
+        const lines = textarea.value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+        if (toggle.checked) { qty.value = lines.length; }
+    };
     document.querySelector('#add-item').addEventListener('click', () => {
         const row = tbody.querySelector('.sale-item-row').cloneNode(true);
-        row.querySelectorAll('input').forEach(input => { input.name = input.name.replace(/items\[\d+\]/, `items[${index}]`); input.value = input.classList.contains('item-quantity') ? '1' : ''; });
+        row.querySelectorAll('input, textarea').forEach(input => {
+            input.name = input.name ? input.name.replace(/items\[\d+\]/, `items[${index}]`) : input.name;
+            if (input.classList.contains('item-quantity')) { input.value = '1'; input.readOnly = false; }
+            else if (input.classList.contains('by-serial-toggle')) { input.checked = false; }
+            else if (input.classList.contains('item-serials')) { input.value = ''; input.disabled = true; }
+            else { input.value = ''; }
+        });
         row.querySelector('.item-total').textContent = '0.00'; tbody.appendChild(row); index++; recalculate();
     });
     tbody.addEventListener('click', event => { const button = event.target.closest('.remove-item'); if (button && tbody.children.length > 1) { button.closest('tr').remove(); recalculate(); } });
+    tbody.addEventListener('change', event => { if (event.target.classList.contains('by-serial-toggle')) { syncSerialMode(event.target.closest('tr')); recalculate(); } });
+    tbody.addEventListener('input', event => { if (event.target.classList.contains('item-serials')) { syncSerialMode(event.target.closest('tr')); } });
     document.querySelector('#supplier_id').addEventListener('change', event => {
         const option = event.target.selectedOptions[0];
         if (!option || !option.value) return;

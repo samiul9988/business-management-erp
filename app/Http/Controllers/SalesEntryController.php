@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Product;
+use App\Models\ProductSerial;
 use App\Models\Sale;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class SalesEntryController extends Controller
@@ -20,6 +22,7 @@ class SalesEntryController extends Controller
             'sale' => null,
             'customers' => $this->customerOptions(),
             'products' => $this->productOptions(),
+            'serialsByProduct' => $this->availableSerialsByProduct(),
         ]);
     }
 
@@ -33,7 +36,22 @@ class SalesEntryController extends Controller
             'sale' => $sale,
             'customers' => $this->customerOptions(),
             'products' => $this->productOptions(),
+            'serialsByProduct' => $this->availableSerialsByProduct($sale),
         ]);
+    }
+
+    private function availableSerialsByProduct(?Sale $sale = null): array
+    {
+        $query = ProductSerial::where('status', 'in_stock');
+
+        if ($sale) {
+            $query->orWhere('sale_id', $sale->id);
+        }
+
+        return $query->get(['product_code', 'serial_no'])
+            ->groupBy('product_code')
+            ->map(fn ($rows) => $rows->pluck('serial_no')->values())
+            ->all();
     }
 
     private function customerOptions()
@@ -69,7 +87,10 @@ class SalesEntryController extends Controller
             'items.*.product_code' => ['nullable', 'string', 'max:100'], 'items.*.warranty_days' => ['nullable', 'integer', 'min:0'],
             'items.*.quantity' => ['required', 'numeric', 'gt:0'], 'items.*.rate' => ['required', 'numeric', 'min:0'],
             'items.*.discount_percent' => ['nullable', 'numeric', 'between:0,100'],
+            'items.*.serial_no' => ['nullable', 'string', 'max:100'],
         ]);
+
+        $this->assertSerialQuantities($validated['items']);
 
         $sale = $database->transaction(function () use ($validated, $request): Sale {
             $items = collect($validated['items'])->map(function (array $item): array {
@@ -84,12 +105,39 @@ class SalesEntryController extends Controller
             $paid = round((float) ($validated['paid'] ?? 0), 2);
             $customerId = $this->findOrCreateCustomer($validated)?->id;
             $sale = Sale::create([...$validated, 'user_id' => $request->user()->id, 'customer_id' => $customerId, 'invoice_no' => $this->nextInvoiceNumber(), 'subtotal' => $subtotal, 'discount' => $discount, 'total' => max($total, 0), 'paid' => $paid, 'due' => max($total - $paid, 0)]);
-            $sale->items()->createMany($items->all());
+            $createdItems = $sale->items()->createMany($items->all());
+            $this->reserveSerials($createdItems, $sale);
 
             return $sale;
         });
 
         return redirect()->route('sales.entry.create')->with('success', "Sale {$sale->invoice_no} saved successfully.");
+    }
+
+    private function assertSerialQuantities(array $items): void
+    {
+        foreach ($items as $item) {
+            if (! empty($item['serial_no']) && (float) $item['quantity'] !== 1.0) {
+                throw ValidationException::withMessages(['items' => "Quantity must be 1 for a serial-tracked item: {$item['product_name']}"]);
+            }
+        }
+    }
+
+    private function reserveSerials($createdItems, Sale $sale): void
+    {
+        $createdItems->each(function ($saleItem) use ($sale): void {
+            if (! $saleItem->serial_no) {
+                return;
+            }
+
+            $serial = ProductSerial::where('serial_no', $saleItem->serial_no)->where('status', 'in_stock')->first();
+
+            if (! $serial) {
+                throw ValidationException::withMessages(['items' => "Serial {$saleItem->serial_no} is no longer available."]);
+            }
+
+            $serial->update(['status' => 'sold', 'sale_id' => $sale->id, 'sale_item_id' => $saleItem->id]);
+        });
     }
 
     public function update(Request $request, Sale $sale, DatabaseManager $database): RedirectResponse
@@ -106,7 +154,10 @@ class SalesEntryController extends Controller
             'items.*.product_code' => ['nullable', 'string', 'max:100'], 'items.*.warranty_days' => ['nullable', 'integer', 'min:0'],
             'items.*.quantity' => ['required', 'numeric', 'gt:0'], 'items.*.rate' => ['required', 'numeric', 'min:0'],
             'items.*.discount_percent' => ['nullable', 'numeric', 'between:0,100'],
+            'items.*.serial_no' => ['nullable', 'string', 'max:100'],
         ]);
+
+        $this->assertSerialQuantities($validated['items']);
 
         $database->transaction(function () use ($validated, $sale): void {
             $items = collect($validated['items'])->map(function (array $item): array {
@@ -122,8 +173,10 @@ class SalesEntryController extends Controller
             $customerId = $this->findOrCreateCustomer($validated)?->id;
 
             $sale->update([...$validated, 'customer_id' => $customerId, 'subtotal' => $subtotal, 'discount' => $discount, 'total' => max($total, 0), 'paid' => $paid, 'due' => max($total - $paid, 0)]);
+            ProductSerial::where('sale_id', $sale->id)->update(['status' => 'in_stock', 'sale_id' => null, 'sale_item_id' => null]);
             $sale->items()->delete();
-            $sale->items()->createMany($items->all());
+            $createdItems = $sale->items()->createMany($items->all());
+            $this->reserveSerials($createdItems, $sale);
         });
 
         return redirect()->route('sales.record')->with('success', "Sale {$sale->invoice_no} updated successfully.");
