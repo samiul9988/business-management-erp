@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Product;
 use App\Models\Sale;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Http\RedirectResponse;
@@ -17,6 +18,8 @@ class SalesEntryController extends Controller
             'nextInvoice' => $this->nextInvoiceNumber(),
             'searchedBarcode' => trim((string) $request->query('barcode', '')),
             'sale' => null,
+            'customers' => $this->customerOptions(),
+            'products' => $this->productOptions(),
         ]);
     }
 
@@ -28,7 +31,28 @@ class SalesEntryController extends Controller
             'nextInvoice' => $sale->invoice_no,
             'searchedBarcode' => '',
             'sale' => $sale,
+            'customers' => $this->customerOptions(),
+            'products' => $this->productOptions(),
         ]);
+    }
+
+    private function customerOptions()
+    {
+        return Customer::query()->orderBy('name')->get(['id', 'customer_code', 'name', 'mobile', 'address', 'previous_due'])
+            ->map(fn (Customer $c) => [
+                'id' => $c->id, 'code' => $c->customer_code, 'name' => $c->name,
+                'mobile' => $c->mobile, 'address' => $c->address, 'due' => (float) $c->previous_due,
+            ]);
+    }
+
+    private function productOptions()
+    {
+        return Product::query()->with('color')->where('status', 'active')->orderBy('name')->get()
+            ->map(fn (Product $p) => [
+                'code' => $p->product_code, 'name' => $p->name, 'color' => $p->color?->name ?? 'N/A',
+                'rate' => (float) $p->sale_rate, 'wholesale_rate' => (float) $p->wholesale_rate,
+                'warranty_days' => $p->warranty_days,
+            ]);
     }
 
     public function store(Request $request, DatabaseManager $database): RedirectResponse
