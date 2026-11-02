@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ProductSerial;
 use App\Models\Purchase;
 use App\Models\Supplier;
@@ -66,6 +67,7 @@ class PurchaseEntryController extends Controller
             $paid = round((float) ($validated['paid'] ?? 0), 2);
             $purchase = Purchase::create([...$validated, 'user_id' => $request->user()->id, 'invoice_no' => $this->nextInvoiceNumber(), 'subtotal' => $subtotal, 'discount' => $discount, 'total' => max($total, 0), 'paid' => $paid, 'due' => max($total - $paid, 0)]);
             $createdItems = $purchase->items()->createMany($items->all());
+            $createdItems->each(fn ($purchaseItem) => $this->ensureProductExists($purchaseItem));
 
             $createdItems->each(function ($purchaseItem, $index) use ($purchase, $serialsByItem): void {
                 foreach ($serialsByItem[$index] as $serialNo) {
@@ -83,6 +85,23 @@ class PurchaseEntryController extends Controller
         });
 
         return redirect()->route('purchase.entry.create')->with('success', "Purchase {$purchase->invoice_no} saved successfully.");
+    }
+
+    private function ensureProductExists($purchaseItem): void
+    {
+        if (empty($purchaseItem->product_code) || Product::where('product_code', $purchaseItem->product_code)->exists()) {
+            return;
+        }
+
+        Product::create([
+            'product_code' => $purchaseItem->product_code,
+            'name' => $purchaseItem->product_name,
+            'warranty_days' => $purchaseItem->warranty_days ?? 0,
+            'purchase_rate' => $purchaseItem->rate,
+            'sale_rate' => $purchaseItem->rate,
+            'wholesale_rate' => $purchaseItem->rate,
+            'status' => 'active',
+        ]);
     }
 
     private function parseSerials(string $raw)
