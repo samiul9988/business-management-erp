@@ -140,7 +140,5 @@ body { font-family: "Source Sans 3", "Segoe UI", sans-serif; color: var(--pos-te
 .sales-items-table .item-serials:disabled { background: #eef1f4; color: #93a1ba; }
 .by-serial-cell { text-align: center; }
 .by-serial-cell input { width: auto !important; }
-.stage-serial-field { display: none; }
-.stage-serial-field.show { display: block; }
-.stage-serial-field select:disabled { background: #eef1f4; color: #93a1ba; }
+.stage-by-serial-cell { display: flex; align-items: end; padding-bottom: .55rem; }
 .cart-serial { display: block; color: #7890a4; font-size: .7rem; }

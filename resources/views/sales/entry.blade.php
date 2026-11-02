@@ -39,7 +39,9 @@
 
                 <div class="sales-card-heading product-heading"><h2><i class="bi bi-box-seam"></i> Add Products</h2></div>
                 <div class="product-staging-grid">
-                    <div class="combo-field product-combo">
+                    <div class="mfs-check stage-by-serial-cell"><label><input type="checkbox" id="stage_by_serial"> By Serial</label></div>
+
+                    <div class="combo-field product-combo" id="product-field-wrap">
                         <label>Product</label>
                         <div class="combo-input-group">
                             <input type="text" id="product_search" autocomplete="off" placeholder="Select Product" value="{{ $searchedBarcode }}">
@@ -47,13 +49,20 @@
                         </div>
                         <ul class="combo-dropdown" id="product-dropdown"></ul>
                     </div>
+
+                    <div class="combo-field product-combo" id="serial-field-wrap" style="display:none">
+                        <label>Serial</label>
+                        <div class="combo-input-group">
+                            <input type="text" id="serial_search" autocomplete="off" placeholder="Select Serial">
+                        </div>
+                        <ul class="combo-dropdown" id="serial-dropdown"></ul>
+                    </div>
+
                     <div><label>Sale Rate</label><input type="number" id="stage_rate" step=".01" min="0" value="0"></div>
                     <div><label>Qty</label><input type="number" id="stage_qty" step=".01" min=".01" value="1"></div>
                     <div><label>Amount</label><output id="stage_amount">0.00</output></div>
                     <div><label>Warranty (Days)</label><input type="number" id="stage_warranty" min="0" value="0"></div>
                     <div><label>Discount %</label><input type="number" id="stage_discount" min="0" max="100" step=".01" value="0"></div>
-                    <div class="mfs-check"><label><input type="checkbox" id="stage_by_serial" disabled> By Serial</label></div>
-                    <div class="stage-serial-field" id="stage_serial_wrap"><label>Serial</label><select id="stage_serial" disabled><option value="">Select Serial</option></select></div>
                     <div class="stage-add-cell"><button type="button" class="btn btn-primary" id="add-to-cart-btn"><i class="bi bi-cart-plus"></i> Add to Cart</button></div>
                 </div>
 
@@ -106,7 +115,7 @@
 (() => {
     const customers = @json($customers);
     const products = @json($products);
-    let serialsByProduct = @json($serialsByProduct);
+    let serialCatalog = @json($serialCatalog);
 
     const money = value => Number(value || 0).toFixed(2);
 
@@ -154,10 +163,22 @@
             stagedProduct = p;
             document.querySelector('#stage_rate').value = saleType() === 'wholesale' ? p.wholesale_rate : p.rate;
             document.querySelector('#stage_warranty').value = p.warranty_days || 0;
-            const toggle = document.querySelector('#stage_by_serial');
-            toggle.checked = false;
-            toggle.disabled = ! (serialsByProduct[p.code] || []).length;
-            syncSerialStage();
+            recalcStage();
+        }
+    );
+
+    const serialLabel = s => s.serial;
+    setupCombo(
+        document.querySelector('#serial_search'),
+        document.querySelector('#serial-dropdown'),
+        serialCatalog,
+        serialLabel,
+        (q) => { const needle = q.toLowerCase(); return serialCatalog.filter(s => serialLabel(s).toLowerCase().includes(needle)); },
+        (s) => {
+            stagedProduct = { code: s.code, name: s.name, rate: s.rate, wholesale_rate: s.wholesale_rate };
+            document.querySelector('#stage_rate').value = saleType() === 'wholesale' ? s.wholesale_rate : s.rate;
+            document.querySelector('#stage_warranty').value = s.warranty_days || 0;
+            document.querySelector('#stage_qty').value = 1;
             recalcStage();
         }
     );
@@ -172,36 +193,29 @@
     ['#stage_rate', '#stage_qty'].forEach(sel => document.querySelector(sel).addEventListener('input', recalcStage));
 
     /* ---------- by-serial staging ---------- */
-    const takeSerial = (code, serial) => { if (serialsByProduct[code]) { serialsByProduct[code] = serialsByProduct[code].filter(s => s !== serial); } };
-    const releaseSerial = (code, serial) => {
-        if (! serial) return;
-        if (! serialsByProduct[code]) serialsByProduct[code] = [];
-        if (! serialsByProduct[code].includes(serial)) serialsByProduct[code].push(serial);
-    };
-    const populateSerialSelect = (code) => {
-        const select = document.querySelector('#stage_serial');
-        select.innerHTML = '<option value="">Select Serial</option>';
-        (serialsByProduct[code] || []).forEach(s => {
-            const opt = document.createElement('option');
-            opt.value = s; opt.textContent = s;
-            select.appendChild(opt);
-        });
+    const takeSerial = (serial) => { serialCatalog = serialCatalog.filter(s => s.serial !== serial); };
+    const releaseSerial = (code, name, serial, rate, warranty) => {
+        if (! serial || serialCatalog.some(s => s.serial === serial)) return;
+        serialCatalog.push({ serial, code, name, rate, wholesale_rate: rate, warranty_days: warranty });
     };
     const syncSerialStage = () => {
         const toggle = document.querySelector('#stage_by_serial');
-        const wrap = document.querySelector('#stage_serial_wrap');
-        const select = document.querySelector('#stage_serial');
+        const productWrap = document.querySelector('#product-field-wrap');
+        const serialWrap = document.querySelector('#serial-field-wrap');
         const qty = document.querySelector('#stage_qty');
+        stagedProduct = null;
+        document.querySelector('#product_search').value = '';
+        document.querySelector('#serial_search').value = '';
+        document.querySelector('#stage_rate').value = 0;
+        document.querySelector('#stage_warranty').value = 0;
         if (toggle.checked) {
-            wrap.classList.add('show');
-            select.disabled = false;
-            populateSerialSelect(stagedProduct?.code);
+            productWrap.style.display = 'none';
+            serialWrap.style.display = '';
             qty.value = 1;
             qty.readOnly = true;
         } else {
-            wrap.classList.remove('show');
-            select.disabled = true;
-            select.innerHTML = '<option value="">Select Serial</option>';
+            productWrap.style.display = '';
+            serialWrap.style.display = 'none';
             qty.readOnly = false;
         }
         recalcStage();
@@ -268,25 +282,25 @@
         const button = event.target.closest('.remove-item');
         if (button) {
             const tr = button.closest('tr');
-            if (tr.dataset.serial) { releaseSerial(tr.dataset.code, tr.dataset.serial); }
+            if (tr.dataset.serial) { releaseSerial(tr.dataset.code, tr.dataset.name, tr.dataset.serial, Number(tr.dataset.rate), Number(tr.dataset.warranty)); }
             tr.remove();
             renderCart();
         }
     });
 
     document.querySelector('#add-to-cart-btn').addEventListener('click', () => {
-        const name = document.querySelector('#product_search').value.trim();
+        const bySerial = document.querySelector('#stage_by_serial').checked;
         const qty = Number(document.querySelector('#stage_qty').value) || 0;
         const rate = Number(document.querySelector('#stage_rate').value) || 0;
-        const bySerial = document.querySelector('#stage_by_serial').checked;
-        const serial = document.querySelector('#stage_serial').value;
+        const name = bySerial ? (stagedProduct?.name || '') : document.querySelector('#product_search').value.trim();
+        const serial = bySerial ? document.querySelector('#serial_search').value.trim() : '';
 
-        if (! name || qty <= 0) {
-            alert('Please select a product and enter a valid quantity.');
+        if (bySerial && (! stagedProduct || ! serial)) {
+            alert('Please select a serial number.');
             return;
         }
-        if (bySerial && ! serial) {
-            alert('Please select a serial number.');
+        if (! bySerial && (! name || qty <= 0)) {
+            alert('Please select a product and enter a valid quantity.');
             return;
         }
 
@@ -297,21 +311,17 @@
             warranty: document.querySelector('#stage_warranty').value,
             qty, rate,
             discount: document.querySelector('#stage_discount').value,
-            serial: bySerial ? serial : '',
+            serial,
         });
 
-        if (bySerial) { takeSerial(code, serial); }
+        if (bySerial) { takeSerial(serial); }
 
-        document.querySelector('#product_search').value = '';
         document.querySelector('#stage_rate').value = 0;
         document.querySelector('#stage_qty').value = 1;
         document.querySelector('#stage_warranty').value = 0;
         document.querySelector('#stage_discount').value = 0;
         document.querySelector('#stage_by_serial').checked = false;
-        document.querySelector('#stage_by_serial').disabled = true;
         syncSerialStage();
-        stagedProduct = null;
-        recalcStage();
         document.querySelector('#product_search').focus();
     });
 
@@ -365,7 +375,7 @@
     @if ($sale)
         @foreach ($sale->items as $item)
             addCartRow({ code: @json($item->product_code), name: @json($item->product_name), warranty: {{ (int) ($item->warranty_days ?? 0) }}, qty: {{ (float) $item->quantity }}, rate: {{ (float) $item->rate }}, discount: {{ (float) $item->discount_percent }}, serial: @json($item->serial_no) });
-            @if ($item->serial_no) takeSerial(@json($item->product_code), @json($item->serial_no)); @endif
+            @if ($item->serial_no) takeSerial(@json($item->serial_no)); @endif
         @endforeach
     @else
         renderCart();

@@ -22,7 +22,7 @@ class SalesEntryController extends Controller
             'sale' => null,
             'customers' => $this->customerOptions(),
             'products' => $this->productOptions(),
-            'serialsByProduct' => $this->availableSerialsByProduct(),
+            'serialCatalog' => $this->serialCatalog(),
         ]);
     }
 
@@ -36,11 +36,11 @@ class SalesEntryController extends Controller
             'sale' => $sale,
             'customers' => $this->customerOptions(),
             'products' => $this->productOptions(),
-            'serialsByProduct' => $this->availableSerialsByProduct($sale),
+            'serialCatalog' => $this->serialCatalog($sale),
         ]);
     }
 
-    private function availableSerialsByProduct(?Sale $sale = null): array
+    private function serialCatalog(?Sale $sale = null): array
     {
         $query = ProductSerial::where('status', 'in_stock');
 
@@ -48,10 +48,18 @@ class SalesEntryController extends Controller
             $query->orWhere('sale_id', $sale->id);
         }
 
-        return $query->get(['product_code', 'serial_no'])
-            ->groupBy('product_code')
-            ->map(fn ($rows) => $rows->pluck('serial_no')->values())
-            ->all();
+        $serials = $query->get(['product_code', 'serial_no']);
+        $productsByCode = Product::whereIn('product_code', $serials->pluck('product_code')->unique())->get()->keyBy('product_code');
+
+        return $serials->map(function ($s) use ($productsByCode) {
+            $p = $productsByCode->get($s->product_code);
+
+            return [
+                'serial' => $s->serial_no, 'code' => $s->product_code, 'name' => $p?->name ?? $s->product_code,
+                'rate' => (float) ($p?->sale_rate ?? 0), 'wholesale_rate' => (float) ($p?->wholesale_rate ?? 0),
+                'warranty_days' => $p?->warranty_days ?? 0,
+            ];
+        })->values()->all();
     }
 
     private function customerOptions()
