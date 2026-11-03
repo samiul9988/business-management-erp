@@ -233,6 +233,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/check/entry', [ChequeController::class, 'create'])->name('cheque.create');
     Route::post('/check/entry', [ChequeController::class, 'store'])->name('cheque.store');
+    Route::get('/check/{cheque}/edit', [ChequeController::class, 'edit'])->name('cheque.edit');
+    Route::put('/check/{cheque}', [ChequeController::class, 'update'])->name('cheque.update');
     Route::get('/check/list', [ChequeController::class, 'index'])->name('cheque.list');
     Route::get('/check/pending/list', fn () => redirect()->route('cheque.list', ['status' => 'pending']))->name('cheque.pending-list');
     Route::get('/check/paid/list', fn () => redirect()->route('cheque.list', ['status' => 'paid']))->name('cheque.paid-list');

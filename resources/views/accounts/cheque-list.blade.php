@@ -13,7 +13,7 @@
         </div>
         <div class="admin-crud-table-wrap">
             <table class="admin-crud-table">
-                <thead><tr><th>Cheque No</th><th>Customer</th><th>Bank</th><th>Amount</th><th>Cheque Date</th><th>Status</th></tr></thead>
+                <thead><tr><th>Cheque No</th><th>Customer</th><th>Bank</th><th>Amount</th><th>Cheque Date</th><th>Status</th><th>Action</th></tr></thead>
                 <tbody>
                     @forelse ($cheques as $cheque)
                         <tr>
@@ -23,9 +23,10 @@
                             <td>{{ number_format($cheque->amount, 2) }}</td>
                             <td>{{ $cheque->cheque_date->format('d/m/Y') }}</td>
                             <td>{{ ucfirst($cheque->status) }}</td>
+                            <td class="row-actions"><a href="{{ route('cheque.edit', $cheque) }}" class="action-edit" title="Edit"><i class="bi bi-pencil"></i></a></td>
                         </tr>
                     @empty
-                        <tr><td colspan="6">No cheques found.</td></tr>
+                        <tr><td colspan="7">No cheques found.</td></tr>
                     @endforelse
                 </tbody>
             </table>

@@ -12,12 +12,33 @@ class ChequeController extends Controller
 {
     public function create(): View
     {
-        return view('accounts.cheque-entry', ['customers' => Customer::orderBy('name')->get()]);
+        return view('accounts.cheque-entry', ['customers' => Customer::orderBy('name')->get(), 'cheque' => null]);
+    }
+
+    public function edit(Cheque $cheque): View
+    {
+        return view('accounts.cheque-entry', ['customers' => Customer::orderBy('name')->get(), 'cheque' => $cheque]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $validated = $this->validated($request);
+        $validated['user_id'] = $request->user()->id;
+        Cheque::create($validated);
+
+        return redirect()->route('cheque.create')->with('success', 'Cheque saved successfully.');
+    }
+
+    public function update(Request $request, Cheque $cheque): RedirectResponse
+    {
+        $cheque->update($this->validated($request));
+
+        return redirect()->route('cheque.list')->with('success', 'Cheque updated successfully.');
+    }
+
+    private function validated(Request $request): array
+    {
+        return $request->validate([
             'customer_id' => ['required', 'exists:customers,id'],
             'bank_name' => ['required', 'string', 'max:255'],
             'branch_name' => ['nullable', 'string', 'max:255'],
@@ -30,10 +51,6 @@ class ChequeController extends Controller
             'submit_date' => ['nullable', 'date'],
             'description' => ['nullable', 'string', 'max:255'],
         ]);
-        $validated['user_id'] = $request->user()->id;
-        Cheque::create($validated);
-
-        return redirect()->route('cheque.create')->with('success', 'Cheque saved successfully.');
     }
 
     public function index(Request $request): View
