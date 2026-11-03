@@ -220,9 +220,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/customer_payment', [CustomerPaymentController::class, 'index'])->name('customer-payment.index');
     Route::post('/customer_payment', [CustomerPaymentController::class, 'store'])->name('customer-payment.store');
+    Route::put('/customer_payment/{customerPayment}', [CustomerPaymentController::class, 'update'])->name('customer-payment.update');
 
     Route::get('/supplier_payment', [SupplierPaymentController::class, 'index'])->name('supplier-payment.index');
     Route::post('/supplier_payment', [SupplierPaymentController::class, 'store'])->name('supplier-payment.store');
+    Route::put('/supplier_payment/{supplierPayment}', [SupplierPaymentController::class, 'update'])->name('supplier-payment.update');
 
     Route::get('/cash_transfer', [CashTransferController::class, 'index'])->name('cash-transfer.index');
     Route::post('/cash_transfer', [CashTransferController::class, 'store'])->name('cash-transfer.store');

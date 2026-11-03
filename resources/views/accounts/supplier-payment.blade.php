@@ -33,7 +33,7 @@
             <div class="sales-card-heading"><h2><i class="bi bi-list-ul"></i> Supplier Payment List</h2></div>
             <div class="admin-crud-table-wrap">
                 <table class="admin-crud-table">
-                    <thead><tr><th>Date</th><th>Supplier</th><th>Type</th><th>Amount</th><th>Discount</th></tr></thead>
+                    <thead><tr><th>Date</th><th>Supplier</th><th>Type</th><th>Amount</th><th>Discount</th><th>Action</th></tr></thead>
                     <tbody>
                         @forelse ($payments as $payment)
                             <tr>
@@ -42,9 +42,32 @@
                                 <td>{{ ucfirst($payment->transaction_type) }} ({{ ucfirst($payment->payment_type) }})</td>
                                 <td>{{ number_format($payment->amount, 2) }}</td>
                                 <td>{{ number_format($payment->discount, 2) }}</td>
+                                <td class="row-actions"><button type="button" class="action-edit" onclick="document.getElementById('edit-row-{{ $payment->id }}').classList.toggle('show')"><i class="bi bi-pencil"></i></button></td>
+                            </tr>
+                            <tr class="edit-row" id="edit-row-{{ $payment->id }}">
+                                <td colspan="6">
+                                    <form method="POST" action="{{ route('supplier-payment.update', $payment) }}" class="admin-crud-form">
+                                        @csrf @method('PUT')
+                                        <div class="field-row">
+                                            <div class="field"><label>Transaction Type</label><select name="transaction_type"><option value="payment" @selected($payment->transaction_type === 'payment')>Payment</option><option value="receive" @selected($payment->transaction_type === 'receive')>Receive</option></select></div>
+                                            <div class="field"><label>Payment Type</label><select name="payment_type"><option value="cash" @selected($payment->payment_type === 'cash')>Cash</option><option value="bank" @selected($payment->payment_type === 'bank')>Bank</option></select></div>
+                                        </div>
+                                        <div class="field"><label>Bank Account</label><select name="bank_account_id"><option value="">-- Select --</option>@foreach ($bankAccounts as $bankAccount)<option value="{{ $bankAccount->id }}" @selected($payment->bank_account_id === $bankAccount->id)>{{ $bankAccount->account_name }}</option>@endforeach</select></div>
+                                        <div class="field-row">
+                                            <div class="field"><label>Payment Date</label><input name="payment_date" type="date" value="{{ $payment->payment_date->toDateString() }}" required></div>
+                                            <div class="field"><label>Amount</label><input name="amount" type="number" step=".01" min="0" value="{{ $payment->amount }}" required></div>
+                                        </div>
+                                        <div class="field-row">
+                                            <div class="field"><label>Discount</label><input name="discount" type="number" step=".01" min="0" value="{{ $payment->discount }}"></div>
+                                            <div class="field"><label>%</label><input name="discount_percent" type="number" step=".01" min="0" max="100" value="{{ $payment->discount_percent }}"></div>
+                                        </div>
+                                        <div class="field"><label>Description</label><input name="description" value="{{ $payment->description }}"></div>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary"><i class="bi bi-save"></i> Update</button>
+                                    </form>
+                                </td>
                             </tr>
                         @empty
-                            <tr><td colspan="5">No supplier payments recorded yet.</td></tr>
+                            <tr><td colspan="6">No supplier payments recorded yet.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
