@@ -100,6 +100,8 @@ Route::middleware('auth')->prefix('sales')->name('sales.')->group(function () {
     Route::post('/service-entry', [ServiceEntryController::class, 'store'])->name('service-entry.store');
     Route::get('/return', [SalesReturnController::class, 'create'])->name('return.create');
     Route::post('/return', [SalesReturnController::class, 'store'])->name('return.store');
+    Route::get('/return/{salesReturn}/edit', [SalesReturnController::class, 'edit'])->name('return-record.edit');
+    Route::put('/return/{salesReturn}', [SalesReturnController::class, 'update'])->name('return-record.update');
     Route::get('/serial-return', [SerialSalesReturnController::class, 'create'])->name('serial-return.create');
     Route::post('/serial-return', [SerialSalesReturnController::class, 'store'])->name('serial-return.store');
     Route::get('/record', [SalesRecordController::class, 'index'])->name('record');

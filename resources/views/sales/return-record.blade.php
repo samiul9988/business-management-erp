@@ -21,7 +21,7 @@
             <div class="record-table-heading"><h2><i class="bi bi-table"></i> Return List</h2><span>{{ $returns->total() }} record(s)</span></div>
             <div class="table-responsive">
                 <table class="sales-record-table">
-                    <thead><tr><th>Return No.</th><th>Invoice No.</th><th>Date</th><th>Customer Name</th><th>Product Name</th><th>Quantity</th><th>Reason</th><th>Total</th></tr></thead>
+                    <thead><tr><th>Return No.</th><th>Invoice No.</th><th>Date</th><th>Customer Name</th><th>Product Name</th><th>Quantity</th><th>Reason</th><th>Total</th><th>Action</th></tr></thead>
                     <tbody>
                         @forelse ($returns as $return)
                             <tr>
@@ -33,9 +33,10 @@
                                 <td><div class="product-lines">@foreach ($return->items as $item)<span>{{ number_format((float) $item->quantity, 2) }}</span>@endforeach</div></td>
                                 <td>{{ $return->reason ?: '-' }}</td>
                                 <td class="amount-cell">{{ number_format((float) $return->total, 2) }}</td>
+                                <td><a href="{{ route('sales.return-record.edit', $return) }}" class="record-action" title="Edit"><i class="bi bi-pencil"></i></a></td>
                             </tr>
                         @empty
-                            <tr><td colspan="8" class="empty-records"><i class="bi bi-inbox"></i><strong>No sales return records found</strong><span>Adjust the date or search filters and try again.</span></td></tr>
+                            <tr><td colspan="9" class="empty-records"><i class="bi bi-inbox"></i><strong>No sales return records found</strong><span>Adjust the date or search filters and try again.</span></td></tr>
                         @endforelse
                     </tbody>
                 </table>
