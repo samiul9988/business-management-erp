@@ -17,12 +17,43 @@ class WarrantyEntryController extends Controller
             'employees' => Employee::where('status', 'active')->orderBy('name')->get(),
             'suppliers' => Supplier::orderBy('name')->get(),
             'nextInvoice' => $this->nextInvoiceNumber(),
+            'warranty' => null,
+        ]);
+    }
+
+    public function edit(Warranty $warranty): View
+    {
+        return view('warranty.entry', [
+            'employees' => Employee::where('status', 'active')->orderBy('name')->get(),
+            'suppliers' => Supplier::orderBy('name')->get(),
+            'nextInvoice' => $warranty->invoice_no,
+            'warranty' => $warranty,
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $validated = $this->validated($request);
+        $validated['user_id'] = $request->user()->id;
+        $validated['invoice_no'] = $this->nextInvoiceNumber();
+        $validated['warranty_validity'] = $request->boolean('warranty_validity');
+        $warranty = Warranty::create($validated);
+
+        return redirect()->route('warranty.entry.create')->with('success', "Warranty {$warranty->invoice_no} saved successfully.");
+    }
+
+    public function update(Request $request, Warranty $warranty): RedirectResponse
+    {
+        $validated = $this->validated($request);
+        $validated['warranty_validity'] = $request->boolean('warranty_validity');
+        $warranty->update($validated);
+
+        return redirect()->route('warranty.record')->with('success', "Warranty {$warranty->invoice_no} updated successfully.");
+    }
+
+    private function validated(Request $request): array
+    {
+        return $request->validate([
             'warranty_date' => ['required', 'date'],
             'customer_name' => ['required', 'string', 'max:255'],
             'customer_mobile' => ['nullable', 'string', 'max:30'],
@@ -49,12 +80,6 @@ class WarrantyEntryController extends Controller
             'remarks' => ['nullable', 'string', 'max:1000'],
             'delivered_date' => ['nullable', 'date'],
         ]);
-        $validated['user_id'] = $request->user()->id;
-        $validated['invoice_no'] = $this->nextInvoiceNumber();
-        $validated['warranty_validity'] = $request->boolean('warranty_validity');
-        $warranty = Warranty::create($validated);
-
-        return redirect()->route('warranty.entry.create')->with('success', "Warranty {$warranty->invoice_no} saved successfully.");
     }
 
     private function nextInvoiceNumber(): string
