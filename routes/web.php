@@ -291,6 +291,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/pending_sales', [PendingSalesController::class, 'index'])->name('pending-sales.index');
     Route::get('/damageEntry', [DamageEntryController::class, 'create'])->name('damage.entry.create');
     Route::post('/damageEntry', [DamageEntryController::class, 'store'])->name('damage.entry.store');
+    Route::get('/damageEntry/{damage}/edit', [DamageEntryController::class, 'edit'])->name('damage.record.edit');
+    Route::put('/damageEntry/{damage}', [DamageEntryController::class, 'update'])->name('damage.record.update');
     Route::get('/damageList', [DamageRecordController::class, 'index'])->name('damage.record');
 
     Route::get('/profitLoss', [ProfitLossReportController::class, 'index'])->name('profit-loss.index');

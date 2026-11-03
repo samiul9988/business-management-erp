@@ -15,12 +15,42 @@ class DamageEntryController extends Controller
         return view('pending.damage-entry', [
             'products' => Product::orderBy('name')->get(),
             'nextInvoice' => $this->nextInvoiceNumber(),
+            'damage' => null,
+        ]);
+    }
+
+    public function edit(Damage $damage): View
+    {
+        return view('pending.damage-entry', [
+            'products' => Product::orderBy('name')->get(),
+            'nextInvoice' => $damage->invoice_no,
+            'damage' => $damage,
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $validated = $this->validated($request);
+        $validated['user_id'] = $request->user()->id;
+        $validated['invoice_no'] = $this->nextInvoiceNumber();
+        $validated['amount'] = round((float) $validated['quantity'] * (float) $validated['rate'], 2);
+        Damage::create($validated);
+
+        return redirect()->route('damage.entry.create')->with('success', 'Damage entry saved successfully.');
+    }
+
+    public function update(Request $request, Damage $damage): RedirectResponse
+    {
+        $validated = $this->validated($request);
+        $validated['amount'] = round((float) $validated['quantity'] * (float) $validated['rate'], 2);
+        $damage->update($validated);
+
+        return redirect()->route('damage.record')->with('success', 'Damage entry updated successfully.');
+    }
+
+    private function validated(Request $request): array
+    {
+        return $request->validate([
             'damage_date' => ['required', 'date'],
             'product_id' => ['required', 'exists:products,id'],
             'product_name' => ['required', 'string', 'max:255'],
@@ -28,12 +58,6 @@ class DamageEntryController extends Controller
             'rate' => ['required', 'numeric', 'min:0'],
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
-        $validated['user_id'] = $request->user()->id;
-        $validated['invoice_no'] = $this->nextInvoiceNumber();
-        $validated['amount'] = round((float) $validated['quantity'] * (float) $validated['rate'], 2);
-        Damage::create($validated);
-
-        return redirect()->route('damage.entry.create')->with('success', 'Damage entry saved successfully.');
     }
 
     private function nextInvoiceNumber(): string

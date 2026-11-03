@@ -11,7 +11,7 @@
         <div class="sales-card-heading"><h2><i class="bi bi-list-ul"></i> Product Damage Record</h2></div>
         <div class="admin-crud-table-wrap">
             <table class="admin-crud-table">
-                <thead><tr><th>Sl</th><th>Invoice</th><th>Date</th><th>Product Name</th><th>Quantity</th><th>Damage Rate</th><th>Damage Amount</th><th>Description</th><th>Added By</th></tr></thead>
+                <thead><tr><th>Sl</th><th>Invoice</th><th>Date</th><th>Product Name</th><th>Quantity</th><th>Damage Rate</th><th>Damage Amount</th><th>Description</th><th>Added By</th><th>Action</th></tr></thead>
                 <tbody>
                     @forelse ($damages as $index => $damage)
                         <tr>
@@ -24,9 +24,10 @@
                             <td>{{ number_format($damage->amount, 2) }}</td>
                             <td>{{ $damage->description ?? '-' }}</td>
                             <td>{{ $damage->user?->name ?? '-' }}</td>
+                            <td class="row-actions"><a href="{{ route('damage.record.edit', $damage) }}" class="action-edit" title="Edit"><i class="bi bi-pencil"></i></a></td>
                         </tr>
                     @empty
-                        <tr><td colspan="9">No damage records found.</td></tr>
+                        <tr><td colspan="10">No damage records found.</td></tr>
                     @endforelse
                 </tbody>
             </table>
