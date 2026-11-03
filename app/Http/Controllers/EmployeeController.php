@@ -18,12 +18,49 @@ class EmployeeController extends Controller
             'designations' => Designation::orderBy('name')->get(),
             'departments' => Department::orderBy('name')->get(),
             'nextEmployeeCode' => $this->nextEmployeeCode(),
+            'employee' => null,
+        ]);
+    }
+
+    public function edit(Employee $employee): View
+    {
+        return view('hr.employee', [
+            'employees' => Employee::with('designation', 'department')->latest('id')->get(),
+            'designations' => Designation::orderBy('name')->get(),
+            'departments' => Department::orderBy('name')->get(),
+            'nextEmployeeCode' => $employee->employee_code,
+            'employee' => $employee,
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $validated = $this->validated($request);
+        $validated['employee_code'] = $this->nextEmployeeCode();
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('employees', 'public');
+        }
+        Employee::create($validated);
+
+        return redirect()->route('employee.index')->with('success', 'Employee added successfully.');
+    }
+
+    public function update(Request $request, Employee $employee): RedirectResponse
+    {
+        $validated = $this->validated($request);
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('employees', 'public');
+        } else {
+            unset($validated['image']);
+        }
+        $employee->update($validated);
+
+        return redirect()->route('employee.index')->with('success', 'Employee updated successfully.');
+    }
+
+    private function validated(Request $request): array
+    {
+        return $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'designation_id' => ['nullable', 'exists:designations,id'],
             'department_id' => ['nullable', 'exists:departments,id'],
@@ -42,13 +79,6 @@ class EmployeeController extends Controller
             'date_of_birth' => ['nullable', 'date'],
             'marital_status' => ['nullable', 'in:married,unmarried'],
         ]);
-        $validated['employee_code'] = $this->nextEmployeeCode();
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('employees', 'public');
-        }
-        Employee::create($validated);
-
-        return redirect()->route('employee.index')->with('success', 'Employee added successfully.');
     }
 
     public function destroy(Employee $employee): RedirectResponse
