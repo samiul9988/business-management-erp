@@ -268,6 +268,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/repair', [RepairEntryController::class, 'create'])->name('repair.entry.create');
     Route::post('/repair', [RepairEntryController::class, 'store'])->name('repair.entry.store');
+    Route::get('/repair/{repair}/edit', [RepairEntryController::class, 'edit'])->name('repair.record.edit');
+    Route::put('/repair/{repair}', [RepairEntryController::class, 'update'])->name('repair.record.update');
     Route::get('/repair_company', [RepairCompanyController::class, 'index'])->name('repair-company.index');
     Route::post('/repair_company', [RepairCompanyController::class, 'store'])->name('repair-company.store');
     Route::put('/repair_company/{repairCompany}', [RepairCompanyController::class, 'update'])->name('repair-company.update');

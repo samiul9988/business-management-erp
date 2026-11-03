@@ -19,12 +19,66 @@ class RepairEntryController extends Controller
             'repairCompanies' => RepairCompany::orderBy('name')->get(),
             'suppliers' => Supplier::orderBy('name')->get(),
             'nextInvoice' => $this->nextInvoiceNumber(),
+            'repair' => null,
+        ]);
+    }
+
+    public function edit(Repair $repair): View
+    {
+        return view('repair.entry', [
+            'employees' => Employee::where('status', 'active')->orderBy('name')->get(),
+            'repairCompanies' => RepairCompany::orderBy('name')->get(),
+            'suppliers' => Supplier::orderBy('name')->get(),
+            'nextInvoice' => $repair->invoice_no,
+            'repair' => $repair,
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $validated = $this->validated($request);
+        $partsAmount = round((float) ($validated['parts_purchase_rate'] ?? 0) * (float) ($validated['parts_quantity'] ?? 0), 2);
+        $total = max(round((float) $validated['subtotal'] - (float) ($validated['discount'] ?? 0), 2), 0);
+        $paid = round((float) ($validated['paid'] ?? 0), 2);
+
+        $repair = Repair::create([
+            ...$validated,
+            'user_id' => $request->user()->id,
+            'invoice_no' => $this->nextInvoiceNumber(),
+            'warranty_period' => $request->boolean('warranty_period'),
+            'extra_received' => $request->boolean('extra_received'),
+            'parts_purchase_amount' => $partsAmount,
+            'total' => $total,
+            'paid' => $paid,
+            'due' => max($total - $paid, 0),
+        ]);
+
+        return redirect()->route('repair.entry.create')->with('success', "Repair {$repair->invoice_no} saved successfully.");
+    }
+
+    public function update(Request $request, Repair $repair): RedirectResponse
+    {
+        $validated = $this->validated($request);
+        $partsAmount = round((float) ($validated['parts_purchase_rate'] ?? 0) * (float) ($validated['parts_quantity'] ?? 0), 2);
+        $total = max(round((float) $validated['subtotal'] - (float) ($validated['discount'] ?? 0), 2), 0);
+        $paid = round((float) ($validated['paid'] ?? 0), 2);
+
+        $repair->update([
+            ...$validated,
+            'warranty_period' => $request->boolean('warranty_period'),
+            'extra_received' => $request->boolean('extra_received'),
+            'parts_purchase_amount' => $partsAmount,
+            'total' => $total,
+            'paid' => $paid,
+            'due' => max($total - $paid, 0),
+        ]);
+
+        return redirect()->route('repair.record')->with('success', "Repair {$repair->invoice_no} updated successfully.");
+    }
+
+    private function validated(Request $request): array
+    {
+        return $request->validate([
             'repair_date' => ['required', 'date'],
             'customer_name' => ['required', 'string', 'max:255'],
             'customer_mobile' => ['nullable', 'string', 'max:30'],
@@ -50,24 +104,6 @@ class RepairEntryController extends Controller
             'payment_method' => ['required', 'in:cash,mfs'],
             'paid' => ['nullable', 'numeric', 'min:0'],
         ]);
-
-        $partsAmount = round((float) ($validated['parts_purchase_rate'] ?? 0) * (float) ($validated['parts_quantity'] ?? 0), 2);
-        $total = max(round((float) $validated['subtotal'] - (float) ($validated['discount'] ?? 0), 2), 0);
-        $paid = round((float) ($validated['paid'] ?? 0), 2);
-
-        $repair = Repair::create([
-            ...$validated,
-            'user_id' => $request->user()->id,
-            'invoice_no' => $this->nextInvoiceNumber(),
-            'warranty_period' => $request->boolean('warranty_period'),
-            'extra_received' => $request->boolean('extra_received'),
-            'parts_purchase_amount' => $partsAmount,
-            'total' => $total,
-            'paid' => $paid,
-            'due' => max($total - $paid, 0),
-        ]);
-
-        return redirect()->route('repair.entry.create')->with('success', "Repair {$repair->invoice_no} saved successfully.");
     }
 
     private function nextInvoiceNumber(): string
