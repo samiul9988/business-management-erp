@@ -16,10 +16,60 @@ class PurchaseEntryController extends Controller
 {
     public function create(): View
     {
-        return view('purchase.entry', ['suppliers' => Supplier::orderBy('name')->get(), 'nextInvoice' => $this->nextInvoiceNumber()]);
+        return view('purchase.entry', ['suppliers' => Supplier::orderBy('name')->get(), 'nextInvoice' => $this->nextInvoiceNumber(), 'purchase' => null]);
+    }
+
+    public function edit(Purchase $purchase): View
+    {
+        $purchase->load('items.serials');
+
+        return view('purchase.entry', ['suppliers' => Supplier::orderBy('name')->get(), 'nextInvoice' => $purchase->invoice_no, 'purchase' => $purchase]);
     }
 
     public function store(Request $request, DatabaseManager $database): RedirectResponse
+    {
+        [$validated, $serialsByItem] = $this->validateAndParse($request);
+
+        $purchase = $database->transaction(function () use ($validated, $request, $serialsByItem): Purchase {
+            $items = $this->itemsWithTotals($validated['items']);
+            $subtotal = round($items->sum('total'), 2);
+            $discount = round((float) ($validated['discount'] ?? 0), 2);
+            $total = round($subtotal + (float) ($validated['vat'] ?? 0) + (float) ($validated['transport_cost'] ?? 0) - $discount, 2);
+            $paid = round((float) ($validated['paid'] ?? 0), 2);
+            $purchase = Purchase::create([...$validated, 'user_id' => $request->user()->id, 'invoice_no' => $this->nextInvoiceNumber(), 'subtotal' => $subtotal, 'discount' => $discount, 'total' => max($total, 0), 'paid' => $paid, 'due' => max($total - $paid, 0)]);
+            $this->saveItemsAndSerials($purchase, $items, $serialsByItem);
+
+            return $purchase;
+        });
+
+        return redirect()->route('purchase.entry.create')->with('success', "Purchase {$purchase->invoice_no} saved successfully.");
+    }
+
+    public function update(Request $request, Purchase $purchase, DatabaseManager $database): RedirectResponse
+    {
+        [$validated, $serialsByItem] = $this->validateAndParse($request, $purchase);
+
+        if (ProductSerial::where('purchase_id', $purchase->id)->where('status', '!=', 'in_stock')->exists()) {
+            throw ValidationException::withMessages(['items' => 'This purchase has serials that are already sold, so its items can no longer be edited.']);
+        }
+
+        $database->transaction(function () use ($validated, $purchase, $serialsByItem): void {
+            $items = $this->itemsWithTotals($validated['items']);
+            $subtotal = round($items->sum('total'), 2);
+            $discount = round((float) ($validated['discount'] ?? 0), 2);
+            $total = round($subtotal + (float) ($validated['vat'] ?? 0) + (float) ($validated['transport_cost'] ?? 0) - $discount, 2);
+            $paid = round((float) ($validated['paid'] ?? 0), 2);
+
+            $purchase->update([...$validated, 'subtotal' => $subtotal, 'discount' => $discount, 'total' => max($total, 0), 'paid' => $paid, 'due' => max($total - $paid, 0)]);
+            ProductSerial::where('purchase_id', $purchase->id)->delete();
+            $purchase->items()->delete();
+            $this->saveItemsAndSerials($purchase, $items, $serialsByItem);
+        });
+
+        return redirect()->route('purchase.record')->with('success', "Purchase {$purchase->invoice_no} updated successfully.");
+    }
+
+    private function validateAndParse(Request $request, ?Purchase $existing = null): array
     {
         $validated = $request->validate([
             'supplier_id' => ['nullable', 'exists:suppliers,id'],
@@ -44,9 +94,13 @@ class PurchaseEntryController extends Controller
 
         $allSerials = $serialsByItem->flatten();
         if ($allSerials->isNotEmpty()) {
-            $existing = ProductSerial::whereIn('serial_no', $allSerials)->value('serial_no');
+            $query = ProductSerial::whereIn('serial_no', $allSerials);
             if ($existing) {
-                throw ValidationException::withMessages(['items' => "Serial number already recorded: {$existing}"]);
+                $query->where('purchase_id', '!=', $existing->id);
+            }
+            $existingSerial = $query->value('serial_no');
+            if ($existingSerial) {
+                throw ValidationException::withMessages(['items' => "Serial number already recorded: {$existingSerial}"]);
             }
         }
 
@@ -57,34 +111,32 @@ class PurchaseEntryController extends Controller
             }
         }
 
-        $purchase = $database->transaction(function () use ($validated, $request, $serialsByItem): Purchase {
-            $items = collect($validated['items'])->map(function (array $item): array {
-                return [...$item, 'total' => round((float) $item['quantity'] * (float) $item['rate'], 2)];
-            })->map(fn (array $item) => collect($item)->except('serials')->all());
-            $subtotal = round($items->sum('total'), 2);
-            $discount = round((float) ($validated['discount'] ?? 0), 2);
-            $total = round($subtotal + (float) ($validated['vat'] ?? 0) + (float) ($validated['transport_cost'] ?? 0) - $discount, 2);
-            $paid = round((float) ($validated['paid'] ?? 0), 2);
-            $purchase = Purchase::create([...$validated, 'user_id' => $request->user()->id, 'invoice_no' => $this->nextInvoiceNumber(), 'subtotal' => $subtotal, 'discount' => $discount, 'total' => max($total, 0), 'paid' => $paid, 'due' => max($total - $paid, 0)]);
-            $createdItems = $purchase->items()->createMany($items->all());
-            $createdItems->each(fn ($purchaseItem) => $this->ensureProductExists($purchaseItem));
+        return [$validated, $serialsByItem];
+    }
 
-            $createdItems->each(function ($purchaseItem, $index) use ($purchase, $serialsByItem): void {
-                foreach ($serialsByItem[$index] as $serialNo) {
-                    ProductSerial::create([
-                        'product_code' => $purchaseItem->product_code,
-                        'serial_no' => $serialNo,
-                        'status' => 'in_stock',
-                        'purchase_id' => $purchase->id,
-                        'purchase_item_id' => $purchaseItem->id,
-                    ]);
-                }
-            });
+    private function itemsWithTotals(array $items)
+    {
+        return collect($items)->map(function (array $item): array {
+            return [...$item, 'total' => round((float) $item['quantity'] * (float) $item['rate'], 2)];
+        })->map(fn (array $item) => collect($item)->except('serials')->all());
+    }
 
-            return $purchase;
+    private function saveItemsAndSerials(Purchase $purchase, $items, $serialsByItem): void
+    {
+        $createdItems = $purchase->items()->createMany($items->all());
+        $createdItems->each(fn ($purchaseItem) => $this->ensureProductExists($purchaseItem));
+
+        $createdItems->each(function ($purchaseItem, $index) use ($purchase, $serialsByItem): void {
+            foreach ($serialsByItem[$index] as $serialNo) {
+                ProductSerial::create([
+                    'product_code' => $purchaseItem->product_code,
+                    'serial_no' => $serialNo,
+                    'status' => 'in_stock',
+                    'purchase_id' => $purchase->id,
+                    'purchase_item_id' => $purchaseItem->id,
+                ]);
+            }
         });
-
-        return redirect()->route('purchase.entry.create')->with('success', "Purchase {$purchase->invoice_no} saved successfully.");
     }
 
     private function ensureProductExists($purchaseItem): void

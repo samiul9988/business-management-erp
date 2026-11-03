@@ -176,6 +176,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/purchase', [PurchaseEntryController::class, 'create'])->name('purchase.entry.create');
     Route::post('/purchase', [PurchaseEntryController::class, 'store'])->name('purchase.entry.store');
+    Route::get('/purchase/{purchase}/edit', [PurchaseEntryController::class, 'edit'])->name('purchase.record.edit');
+    Route::put('/purchase/{purchase}', [PurchaseEntryController::class, 'update'])->name('purchase.record.update');
     Route::get('/purchaseReturns', [PurchaseReturnController::class, 'create'])->name('purchase.return.create');
     Route::post('/purchaseReturns', [PurchaseReturnController::class, 'store'])->name('purchase.return.store');
     Route::get('/serial_purchase_return', [SerialPurchaseReturnController::class, 'create'])->name('purchase.serial-return.create');
