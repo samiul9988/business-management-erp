@@ -27,7 +27,13 @@
                         @forelse ($months as $index => $month)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $month->name }}</td>
+                                <td>
+                                    <form method="POST" action="{{ route('month.update', $month) }}" class="inline-edit-form" style="display:flex; gap:.4rem;">
+                                        @csrf @method('PUT')
+                                        <input name="name" type="month" value="{{ $month->name }}" style="padding:.3rem .5rem; border:1px solid #cad8e5; border-radius:4px;">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                                    </form>
+                                </td>
                                 <td class="row-actions">
                                     <form method="POST" action="{{ route('month.destroy', $month) }}" onsubmit="return confirm('Delete this month?')">
                                         @csrf @method('DELETE')

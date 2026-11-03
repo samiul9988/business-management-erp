@@ -22,6 +22,14 @@ class MonthController extends Controller
         return redirect()->route('month.index')->with('success', 'Month added successfully.');
     }
 
+    public function update(Request $request, Month $month): RedirectResponse
+    {
+        $validated = $request->validate(['name' => ['required', 'string', 'max:7', 'unique:months,name,'.$month->id]]);
+        $month->update($validated);
+
+        return redirect()->route('month.index')->with('success', 'Month updated successfully.');
+    }
+
     public function destroy(Month $month): RedirectResponse
     {
         $month->delete();

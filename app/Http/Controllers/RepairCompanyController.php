@@ -25,6 +25,17 @@ class RepairCompanyController extends Controller
         return redirect()->route('repair-company.index')->with('success', 'Repair company added successfully.');
     }
 
+    public function update(Request $request, RepairCompany $repairCompany): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:repair_companies,name,'.$repairCompany->id],
+            'description' => ['nullable', 'string', 'max:1000'],
+        ]);
+        $repairCompany->update($validated);
+
+        return redirect()->route('repair-company.index')->with('success', 'Repair company updated successfully.');
+    }
+
     public function destroy(RepairCompany $repairCompany): RedirectResponse
     {
         $repairCompany->delete();

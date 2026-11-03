@@ -41,9 +41,29 @@
                                 <td>{{ $bankAccount->bank_name ?? '-' }}</td>
                                 <td>{{ number_format($bankAccount->initial_balance, 2) }}</td>
                                 <td class="row-actions">
+                                    <button type="button" class="action-edit" onclick="document.getElementById('edit-row-{{ $bankAccount->id }}').classList.toggle('show')"><i class="bi bi-pencil"></i></button>
                                     <form method="POST" action="{{ route('bank-account.destroy', $bankAccount) }}" onsubmit="return confirm('Delete this account?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="action-delete"><i class="bi bi-trash3"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr class="edit-row" id="edit-row-{{ $bankAccount->id }}">
+                                <td colspan="5">
+                                    <form method="POST" action="{{ route('bank-account.update', $bankAccount) }}" class="admin-crud-form">
+                                        @csrf @method('PUT')
+                                        <div class="field"><label>Account Name</label><input name="account_name" required value="{{ $bankAccount->account_name }}"></div>
+                                        <div class="field-row">
+                                            <div class="field"><label>Account No.</label><input name="account_no" value="{{ $bankAccount->account_no }}"></div>
+                                            <div class="field"><label>Account Type</label><input name="account_type" value="{{ $bankAccount->account_type }}"></div>
+                                        </div>
+                                        <div class="field-row">
+                                            <div class="field"><label>Bank Name</label><input name="bank_name" value="{{ $bankAccount->bank_name }}"></div>
+                                            <div class="field"><label>Branch Name</label><input name="branch_name" value="{{ $bankAccount->branch_name }}"></div>
+                                        </div>
+                                        <div class="field"><label>Initial Balance</label><input name="initial_balance" type="number" step=".01" min="0" value="{{ $bankAccount->initial_balance }}"></div>
+                                        <div class="field"><label>Description</label><textarea name="description" rows="2">{{ $bankAccount->description }}</textarea></div>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary"><i class="bi bi-save"></i> Update</button>
                                     </form>
                                 </td>
                             </tr>

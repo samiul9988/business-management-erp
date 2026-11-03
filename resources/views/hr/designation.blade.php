@@ -27,7 +27,13 @@
                         @forelse ($designations as $index => $designation)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $designation->name }}</td>
+                                <td>
+                                    <form method="POST" action="{{ route('designation.update', $designation) }}" class="inline-edit-form" style="display:flex; gap:.4rem;">
+                                        @csrf @method('PUT')
+                                        <input name="name" value="{{ $designation->name }}" style="padding:.3rem .5rem; border:1px solid #cad8e5; border-radius:4px;">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                                    </form>
+                                </td>
                                 <td class="row-actions">
                                     <form method="POST" action="{{ route('designation.destroy', $designation) }}" onsubmit="return confirm('Delete this designation?')">
                                         @csrf @method('DELETE')

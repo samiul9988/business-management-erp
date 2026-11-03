@@ -22,6 +22,14 @@ class DepartmentController extends Controller
         return redirect()->route('department.index')->with('success', 'Department added successfully.');
     }
 
+    public function update(Request $request, Department $department): RedirectResponse
+    {
+        $validated = $request->validate(['name' => ['required', 'string', 'max:255', 'unique:departments,name,'.$department->id]]);
+        $department->update($validated);
+
+        return redirect()->route('department.index')->with('success', 'Department updated successfully.');
+    }
+
     public function destroy(Department $department): RedirectResponse
     {
         $department->delete();

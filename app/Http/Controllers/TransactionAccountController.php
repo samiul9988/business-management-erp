@@ -26,6 +26,18 @@ class TransactionAccountController extends Controller
         return redirect()->route('account.index')->with('success', 'Account added successfully.');
     }
 
+    public function update(Request $request, TransactionAccount $account): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'in:cash_in,cash_out'],
+            'description' => ['nullable', 'string', 'max:1000'],
+        ]);
+        $account->update($validated);
+
+        return redirect()->route('account.index')->with('success', 'Account updated successfully.');
+    }
+
     public function destroy(TransactionAccount $account): RedirectResponse
     {
         $account->delete();

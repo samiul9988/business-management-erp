@@ -28,8 +28,14 @@
                         @forelse ($companies as $index => $company)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $company->name }}</td>
-                                <td>{{ $company->description ?? '-' }}</td>
+                                <td colspan="2">
+                                    <form method="POST" action="{{ route('repair-company.update', $company) }}" class="inline-edit-form" style="display:flex; gap:.4rem;">
+                                        @csrf @method('PUT')
+                                        <input name="name" value="{{ $company->name }}" style="padding:.3rem .5rem; border:1px solid #cad8e5; border-radius:4px;">
+                                        <input name="description" value="{{ $company->description }}" placeholder="Description" style="padding:.3rem .5rem; border:1px solid #cad8e5; border-radius:4px; flex:1;">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                                    </form>
+                                </td>
                                 <td class="row-actions">
                                     <form method="POST" action="{{ route('repair-company.destroy', $company) }}" onsubmit="return confirm('Delete this company?')">
                                         @csrf @method('DELETE')

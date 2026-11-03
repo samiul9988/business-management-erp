@@ -186,18 +186,22 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/account', [TransactionAccountController::class, 'index'])->name('account.index');
     Route::post('/account', [TransactionAccountController::class, 'store'])->name('account.store');
+    Route::put('/account/{account}', [TransactionAccountController::class, 'update'])->name('account.update');
     Route::delete('/account/{account}', [TransactionAccountController::class, 'destroy'])->name('account.destroy');
 
     Route::get('/bank_accounts', [BankAccountController::class, 'index'])->name('bank-account.index');
     Route::post('/bank_accounts', [BankAccountController::class, 'store'])->name('bank-account.store');
+    Route::put('/bank_accounts/{bankAccount}', [BankAccountController::class, 'update'])->name('bank-account.update');
     Route::delete('/bank_accounts/{bankAccount}', [BankAccountController::class, 'destroy'])->name('bank-account.destroy');
 
     Route::get('/loan_accounts', [LoanAccountController::class, 'index'])->name('loan-account.index');
     Route::post('/loan_accounts', [LoanAccountController::class, 'store'])->name('loan-account.store');
+    Route::put('/loan_accounts/{loanAccount}', [LoanAccountController::class, 'update'])->name('loan-account.update');
     Route::delete('/loan_accounts/{loanAccount}', [LoanAccountController::class, 'destroy'])->name('loan-account.destroy');
 
     Route::get('/investment_account', [InvestmentAccountController::class, 'index'])->name('investment-account.index');
     Route::post('/investment_account', [InvestmentAccountController::class, 'store'])->name('investment-account.store');
+    Route::put('/investment_account/{investmentAccount}', [InvestmentAccountController::class, 'update'])->name('investment-account.update');
     Route::delete('/investment_account/{investmentAccount}', [InvestmentAccountController::class, 'destroy'])->name('investment-account.destroy');
 
     Route::get('/cashTransaction', [CashTransactionController::class, 'index'])->name('cash-transaction.index');
@@ -233,14 +237,17 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/designation', [DesignationController::class, 'index'])->name('designation.index');
     Route::post('/designation', [DesignationController::class, 'store'])->name('designation.store');
+    Route::put('/designation/{designation}', [DesignationController::class, 'update'])->name('designation.update');
     Route::delete('/designation/{designation}', [DesignationController::class, 'destroy'])->name('designation.destroy');
 
     Route::get('/depertment', [DepartmentController::class, 'index'])->name('department.index');
     Route::post('/depertment', [DepartmentController::class, 'store'])->name('department.store');
+    Route::put('/depertment/{department}', [DepartmentController::class, 'update'])->name('department.update');
     Route::delete('/depertment/{department}', [DepartmentController::class, 'destroy'])->name('department.destroy');
 
     Route::get('/month', [MonthController::class, 'index'])->name('month.index');
     Route::post('/month', [MonthController::class, 'store'])->name('month.store');
+    Route::put('/month/{month}', [MonthController::class, 'update'])->name('month.update');
     Route::delete('/month/{month}', [MonthController::class, 'destroy'])->name('month.destroy');
 
     Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.index');
@@ -259,6 +266,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/repair', [RepairEntryController::class, 'store'])->name('repair.entry.store');
     Route::get('/repair_company', [RepairCompanyController::class, 'index'])->name('repair-company.index');
     Route::post('/repair_company', [RepairCompanyController::class, 'store'])->name('repair-company.store');
+    Route::put('/repair_company/{repairCompany}', [RepairCompanyController::class, 'update'])->name('repair-company.update');
     Route::delete('/repair_company/{repairCompany}', [RepairCompanyController::class, 'destroy'])->name('repair-company.destroy');
     Route::get('/repair_record', [RepairRecordController::class, 'index'])->name('repair.record');
     Route::get('/repairStock', fn () => redirect()->route('repair.record', ['status' => 'pending']))->name('repair.in-stock');

@@ -21,6 +21,13 @@ class InvestmentAccountController extends Controller
         return redirect()->route('investment-account.index')->with('success', 'Investment account added successfully.');
     }
 
+    public function update(Request $request, InvestmentAccount $investmentAccount): RedirectResponse
+    {
+        $investmentAccount->update($this->validated($request));
+
+        return redirect()->route('investment-account.index')->with('success', 'Investment account updated successfully.');
+    }
+
     public function destroy(InvestmentAccount $investmentAccount): RedirectResponse
     {
         $investmentAccount->delete();

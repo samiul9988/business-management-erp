@@ -28,8 +28,17 @@
                         @forelse ($accounts as $account)
                             <tr>
                                 <td>{{ $account->id }}</td>
-                                <td>{{ $account->name }}</td>
-                                <td>{{ $account->type === 'cash_in' ? 'Cash In' : 'Cash Out' }}</td>
+                                <td colspan="2">
+                                    <form method="POST" action="{{ route('account.update', $account) }}" class="inline-edit-form" style="display:flex; gap:.4rem;">
+                                        @csrf @method('PUT')
+                                        <input name="name" value="{{ $account->name }}" style="padding:.3rem .5rem; border:1px solid #cad8e5; border-radius:4px;">
+                                        <select name="type" style="padding:.3rem .5rem; border:1px solid #cad8e5; border-radius:4px;">
+                                            <option value="cash_in" @selected($account->type === 'cash_in')>Cash In</option>
+                                            <option value="cash_out" @selected($account->type === 'cash_out')>Cash Out</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                                    </form>
+                                </td>
                                 <td class="row-actions">
                                     <form method="POST" action="{{ route('account.destroy', $account) }}" onsubmit="return confirm('Delete this account?')">
                                         @csrf @method('DELETE')

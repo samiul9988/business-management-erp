@@ -21,6 +21,13 @@ class LoanAccountController extends Controller
         return redirect()->route('loan-account.index')->with('success', 'Loan account added successfully.');
     }
 
+    public function update(Request $request, LoanAccount $loanAccount): RedirectResponse
+    {
+        $loanAccount->update($this->validated($request));
+
+        return redirect()->route('loan-account.index')->with('success', 'Loan account updated successfully.');
+    }
+
     public function destroy(LoanAccount $loanAccount): RedirectResponse
     {
         $loanAccount->delete();

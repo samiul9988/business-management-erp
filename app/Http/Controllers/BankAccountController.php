@@ -22,6 +22,13 @@ class BankAccountController extends Controller
         return redirect()->route('bank-account.index')->with('success', 'Bank account added successfully.');
     }
 
+    public function update(Request $request, BankAccount $bankAccount): RedirectResponse
+    {
+        $bankAccount->update($this->validated($request));
+
+        return redirect()->route('bank-account.index')->with('success', 'Bank account updated successfully.');
+    }
+
     public function destroy(BankAccount $bankAccount): RedirectResponse
     {
         $bankAccount->delete();

@@ -142,4 +142,7 @@ body { font-family: "Source Sans 3", "Segoe UI", sans-serif; color: var(--pos-te
 .by-serial-cell { text-align: center; }
 .by-serial-cell input { width: auto !important; }
 .stage-by-serial-cell.full-row { grid-column: 1 / -1; padding: 0; }
+.admin-crud-table .edit-row { display: none; background: #f7fbfd; }
+.admin-crud-table .edit-row.show { display: table-row; }
+.admin-crud-table .edit-row .admin-crud-form { padding: .8rem; }
 .cart-serial { display: block; color: #7890a4; font-size: .7rem; }

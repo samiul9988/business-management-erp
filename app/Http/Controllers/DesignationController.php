@@ -22,6 +22,14 @@ class DesignationController extends Controller
         return redirect()->route('designation.index')->with('success', 'Designation added successfully.');
     }
 
+    public function update(Request $request, Designation $designation): RedirectResponse
+    {
+        $validated = $request->validate(['name' => ['required', 'string', 'max:255', 'unique:designations,name,'.$designation->id]]);
+        $designation->update($validated);
+
+        return redirect()->route('designation.index')->with('success', 'Designation updated successfully.');
+    }
+
     public function destroy(Designation $designation): RedirectResponse
     {
         $designation->delete();
