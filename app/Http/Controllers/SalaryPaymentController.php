@@ -51,4 +51,27 @@ class SalaryPaymentController extends Controller
 
         return redirect()->route('salary-payment.index')->with('success', 'Salary payment saved successfully.');
     }
+
+    public function update(Request $request, SalaryPayment $salaryPayment, DatabaseManager $database): RedirectResponse
+    {
+        $validated = $request->validate([
+            'payment_method' => ['required', 'in:cash,bank'],
+            'bank_account_id' => ['nullable', 'exists:bank_accounts,id'],
+            'payment_date' => ['required', 'date'],
+            'amount' => ['required', 'numeric', 'gt:0'],
+            'note' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $database->transaction(function () use ($validated, $salaryPayment): void {
+            $salary = $salaryPayment->salary;
+            $salary->update(['paid' => max((float) $salary->paid - (float) $salaryPayment->amount, 0), 'due' => (float) $salary->due + (float) $salaryPayment->amount]);
+
+            $salaryPayment->update($validated);
+
+            $salary->refresh();
+            $salary->update(['paid' => (float) $salary->paid + (float) $validated['amount'], 'due' => max((float) $salary->due - (float) $validated['amount'], 0)]);
+        });
+
+        return redirect()->route('salary-payment.index')->with('success', 'Salary payment updated successfully.');
+    }
 }

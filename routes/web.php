@@ -268,9 +268,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/salary_generate', [SalaryGenerateController::class, 'index'])->name('salary-generate.index');
     Route::post('/salary_generate', [SalaryGenerateController::class, 'store'])->name('salary-generate.store');
+    Route::put('/salary_generate/{salary}', [SalaryGenerateController::class, 'update'])->name('salary-generate.update');
 
     Route::get('/salary_payment', [SalaryPaymentController::class, 'index'])->name('salary-payment.index');
     Route::post('/salary_payment', [SalaryPaymentController::class, 'store'])->name('salary-payment.store');
+    Route::put('/salary_payment/{salaryPayment}', [SalaryPaymentController::class, 'update'])->name('salary-payment.update');
 
     Route::get('/repair', [RepairEntryController::class, 'create'])->name('repair.entry.create');
     Route::post('/repair', [RepairEntryController::class, 'store'])->name('repair.entry.store');

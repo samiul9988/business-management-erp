@@ -32,7 +32,7 @@
             <div class="sales-card-heading"><h2><i class="bi bi-list-ul"></i> Salary Payment List</h2></div>
             <div class="admin-crud-table-wrap">
                 <table class="admin-crud-table">
-                    <thead><tr><th>Date</th><th>Employee</th><th>Month</th><th>Amount</th><th>Method</th></tr></thead>
+                    <thead><tr><th>Date</th><th>Employee</th><th>Month</th><th>Amount</th><th>Method</th><th>Action</th></tr></thead>
                     <tbody>
                         @forelse ($payments as $payment)
                             <tr>
@@ -41,9 +41,27 @@
                                 <td>{{ $payment->salary?->month?->name ?? '-' }}</td>
                                 <td>{{ number_format($payment->amount, 2) }}</td>
                                 <td>{{ ucfirst($payment->payment_method) }}</td>
+                                <td class="row-actions"><button type="button" class="action-edit" onclick="document.getElementById('edit-row-{{ $payment->id }}').classList.toggle('show')"><i class="bi bi-pencil"></i></button></td>
+                            </tr>
+                            <tr class="edit-row" id="edit-row-{{ $payment->id }}">
+                                <td colspan="6">
+                                    <form method="POST" action="{{ route('salary-payment.update', $payment) }}" class="admin-crud-form">
+                                        @csrf @method('PUT')
+                                        <div class="field-row">
+                                            <div class="field"><label>Payment Method</label><select name="payment_method"><option value="cash" @selected($payment->payment_method === 'cash')>Cash</option><option value="bank" @selected($payment->payment_method === 'bank')>Bank</option></select></div>
+                                            <div class="field"><label>Bank Account</label><select name="bank_account_id"><option value="">-- Select --</option>@foreach ($bankAccounts as $bankAccount)<option value="{{ $bankAccount->id }}" @selected($payment->bank_account_id === $bankAccount->id)>{{ $bankAccount->account_name }}</option>@endforeach</select></div>
+                                        </div>
+                                        <div class="field-row">
+                                            <div class="field"><label>Date</label><input name="payment_date" type="date" value="{{ $payment->payment_date->toDateString() }}" required></div>
+                                            <div class="field"><label>Amount</label><input name="amount" type="number" step=".01" min="0" value="{{ $payment->amount }}" required></div>
+                                        </div>
+                                        <div class="field"><label>Note</label><textarea name="note" rows="2">{{ $payment->note }}</textarea></div>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary"><i class="bi bi-save"></i> Update</button>
+                                    </form>
+                                </td>
                             </tr>
                         @empty
-                            <tr><td colspan="5">No salary payments recorded yet.</td></tr>
+                            <tr><td colspan="6">No salary payments recorded yet.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

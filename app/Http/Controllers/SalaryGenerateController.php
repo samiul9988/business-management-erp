@@ -48,4 +48,12 @@ class SalaryGenerateController extends Controller
 
         return redirect()->route('salary-generate.index')->with('success', "Salary generated for {$count} employee(s).");
     }
+
+    public function update(Request $request, Salary $salary): RedirectResponse
+    {
+        $validated = $request->validate(['amount' => ['required', 'numeric', 'min:0']]);
+        $salary->update(['amount' => $validated['amount'], 'due' => max($validated['amount'] - (float) $salary->paid, 0)]);
+
+        return redirect()->route('salary-generate.index')->with('success', 'Salary amount updated successfully.');
+    }
 }
