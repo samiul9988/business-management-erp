@@ -12,32 +12,22 @@ class QuotationController extends Controller
 {
     public function create(): View
     {
-        return view('quotations.create', ['nextQuotationNo' => $this->nextQuotationNumber()]);
+        return view('quotations.create', ['nextQuotationNo' => $this->nextQuotationNumber(), 'quotation' => null]);
+    }
+
+    public function edit(Quotation $quotation): View
+    {
+        $quotation->load('items');
+
+        return view('quotations.create', ['nextQuotationNo' => $quotation->quotation_no, 'quotation' => $quotation]);
     }
 
     public function store(Request $request, DatabaseManager $database): RedirectResponse
     {
-        $validated = $request->validate([
-            'customer_name' => ['required', 'string', 'max:255'],
-            'customer_mobile' => ['nullable', 'string', 'max:30'],
-            'customer_address' => ['nullable', 'string', 'max:1000'],
-            'quotation_date' => ['required', 'date'],
-            'valid_until' => ['nullable', 'date', 'after_or_equal:quotation_date'],
-            'vat' => ['nullable', 'numeric', 'min:0'], 'discount' => ['nullable', 'numeric', 'min:0'],
-            'transport_cost' => ['nullable', 'numeric', 'min:0'],
-            'items' => ['required', 'array', 'min:1'], 'items.*.product_name' => ['required', 'string', 'max:255'],
-            'items.*.product_code' => ['nullable', 'string', 'max:100'],
-            'items.*.quantity' => ['required', 'numeric', 'gt:0'], 'items.*.rate' => ['required', 'numeric', 'min:0'],
-            'items.*.discount_percent' => ['nullable', 'numeric', 'between:0,100'],
-        ]);
+        $validated = $this->validated($request);
 
         $quotation = $database->transaction(function () use ($validated, $request): Quotation {
-            $items = collect($validated['items'])->map(function (array $item): array {
-                $subtotal = round((float) $item['quantity'] * (float) $item['rate'], 2);
-                $discountAmount = round($subtotal * ((float) ($item['discount_percent'] ?? 0) / 100), 2);
-
-                return [...$item, 'subtotal' => $subtotal, 'discount_amount' => $discountAmount, 'total' => $subtotal - $discountAmount];
-            });
+            $items = $this->itemsWithTotals($validated['items']);
             $subtotal = round($items->sum('subtotal'), 2);
             $discount = round((float) ($validated['discount'] ?? 0) + $items->sum('discount_amount'), 2);
             $total = round($subtotal + (float) ($validated['vat'] ?? 0) + (float) ($validated['transport_cost'] ?? 0) - $discount, 2);
@@ -51,6 +41,51 @@ class QuotationController extends Controller
         });
 
         return redirect()->route('quotations.invoice.show', $quotation)->with('success', "Quotation {$quotation->quotation_no} saved successfully.");
+    }
+
+    public function update(Request $request, Quotation $quotation, DatabaseManager $database): RedirectResponse
+    {
+        $validated = $this->validated($request);
+
+        $database->transaction(function () use ($validated, $quotation): void {
+            $items = $this->itemsWithTotals($validated['items']);
+            $subtotal = round($items->sum('subtotal'), 2);
+            $discount = round((float) ($validated['discount'] ?? 0) + $items->sum('discount_amount'), 2);
+            $total = round($subtotal + (float) ($validated['vat'] ?? 0) + (float) ($validated['transport_cost'] ?? 0) - $discount, 2);
+
+            $quotation->update([...$validated, 'subtotal' => $subtotal, 'discount' => $discount, 'total' => max($total, 0)]);
+            $quotation->items()->delete();
+            $quotation->items()->createMany($items->all());
+        });
+
+        return redirect()->route('quotations.record')->with('success', "Quotation {$quotation->quotation_no} updated successfully.");
+    }
+
+    private function validated(Request $request): array
+    {
+        return $request->validate([
+            'customer_name' => ['required', 'string', 'max:255'],
+            'customer_mobile' => ['nullable', 'string', 'max:30'],
+            'customer_address' => ['nullable', 'string', 'max:1000'],
+            'quotation_date' => ['required', 'date'],
+            'valid_until' => ['nullable', 'date', 'after_or_equal:quotation_date'],
+            'vat' => ['nullable', 'numeric', 'min:0'], 'discount' => ['nullable', 'numeric', 'min:0'],
+            'transport_cost' => ['nullable', 'numeric', 'min:0'],
+            'items' => ['required', 'array', 'min:1'], 'items.*.product_name' => ['required', 'string', 'max:255'],
+            'items.*.product_code' => ['nullable', 'string', 'max:100'],
+            'items.*.quantity' => ['required', 'numeric', 'gt:0'], 'items.*.rate' => ['required', 'numeric', 'min:0'],
+            'items.*.discount_percent' => ['nullable', 'numeric', 'between:0,100'],
+        ]);
+    }
+
+    private function itemsWithTotals(array $items)
+    {
+        return collect($items)->map(function (array $item): array {
+            $subtotal = round((float) $item['quantity'] * (float) $item['rate'], 2);
+            $discountAmount = round($subtotal * ((float) ($item['discount_percent'] ?? 0) / 100), 2);
+
+            return [...$item, 'subtotal' => $subtotal, 'discount_amount' => $discountAmount, 'total' => $subtotal - $discountAmount];
+        });
     }
 
     private function nextQuotationNumber(): string

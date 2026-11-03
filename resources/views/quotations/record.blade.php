@@ -31,7 +31,7 @@
                                 <td><div class="product-lines">@foreach ($quotation->items as $item)<span>{{ $item->product_name }}</span>@endforeach</div></td>
                                 <td class="amount-cell">{{ number_format((float) $quotation->total, 2) }}</td>
                                 <td><span class="status-badge">{{ ucfirst($quotation->status) }}</span></td>
-                                <td><a href="{{ route('quotations.invoice.show', $quotation) }}" class="record-action" title="View"><i class="bi bi-eye"></i></a></td>
+                                <td><a href="{{ route('quotations.invoice.show', $quotation) }}" class="record-action" title="View"><i class="bi bi-eye"></i></a><a href="{{ route('quotations.record.edit', $quotation) }}" class="record-action" title="Edit"><i class="bi bi-pencil"></i></a></td>
                             </tr>
                         @empty
                             <tr><td colspan="8" class="empty-records"><i class="bi bi-inbox"></i><strong>No quotations found</strong><span>Adjust the date or search filters and try again.</span></td></tr>

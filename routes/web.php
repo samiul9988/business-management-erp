@@ -120,6 +120,8 @@ Route::middleware('auth')->prefix('sales')->name('sales.')->group(function () {
 Route::middleware('auth')->prefix('quotations')->name('quotations.')->group(function () {
     Route::get('/entry', [QuotationController::class, 'create'])->name('entry.create');
     Route::post('/entry', [QuotationController::class, 'store'])->name('entry.store');
+    Route::get('/{quotation}/edit', [QuotationController::class, 'edit'])->name('record.edit');
+    Route::put('/{quotation}', [QuotationController::class, 'update'])->name('record.update');
     Route::get('/record', [QuotationRecordController::class, 'index'])->name('record');
     Route::get('/invoice', [QuotationInvoiceController::class, 'index'])->name('invoice.index');
     Route::get('/invoice/{quotation}', [QuotationInvoiceController::class, 'show'])->name('invoice.show');
