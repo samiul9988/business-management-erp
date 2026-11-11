@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CompanyProfile;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PurchaseRecordController extends Controller
 {
+    public function invoice(Purchase $purchase): View
+    {
+        $purchase->load(['items', 'supplier']);
+
+        return view('purchase.invoice-print', ['purchase' => $purchase, 'company' => CompanyProfile::first()]);
+    }
+
     public function index(Request $request): View
     {
         $filters = $request->validate([

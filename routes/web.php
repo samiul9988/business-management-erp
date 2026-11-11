@@ -187,6 +187,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/serial_purchase_return', [SerialPurchaseReturnController::class, 'create'])->name('purchase.serial-return.create');
     Route::post('/serial_purchase_return', [SerialPurchaseReturnController::class, 'store'])->name('purchase.serial-return.store');
     Route::get('/purchaseRecord', [PurchaseRecordController::class, 'index'])->name('purchase.record');
+    Route::get('/purchase/{purchase}/invoice', [PurchaseRecordController::class, 'invoice'])->name('purchase.record.invoice');
     Route::get('/AssetsEntry', [AssetController::class, 'create'])->name('assets.create');
     Route::post('/AssetsEntry', [AssetController::class, 'store'])->name('assets.store');
 
