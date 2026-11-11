@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CompanyProfile;
 use App\Models\Warranty;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class WarrantyRecordController extends Controller
 {
+    public function invoice(Warranty $warranty): View
+    {
+        $warranty->load(['receivedByEmployee', 'transferByEmployee', 'returnReceivedByEmployee', 'deliveredByEmployee', 'supplier']);
+
+        return view('warranty.invoice-print', ['warranty' => $warranty, 'company' => CompanyProfile::first()]);
+    }
+
     public function index(Request $request): View
     {
         $filters = $request->validate([
