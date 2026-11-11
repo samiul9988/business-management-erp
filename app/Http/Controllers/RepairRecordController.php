@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CompanyProfile;
 use App\Models\Repair;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class RepairRecordController extends Controller
 {
+    public function invoice(Repair $repair): View
+    {
+        $repair->load(['assignedEmployee', 'repairCompany', 'partsSupplier']);
+
+        return view('repair.invoice-print', ['repair' => $repair, 'company' => CompanyProfile::first()]);
+    }
+
     public function index(Request $request): View
     {
         $filters = $request->validate([

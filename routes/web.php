@@ -285,6 +285,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/repair_company/{repairCompany}', [RepairCompanyController::class, 'update'])->name('repair-company.update');
     Route::delete('/repair_company/{repairCompany}', [RepairCompanyController::class, 'destroy'])->name('repair-company.destroy');
     Route::get('/repair_record', [RepairRecordController::class, 'index'])->name('repair.record');
+    Route::get('/repair/{repair}/invoice', [RepairRecordController::class, 'invoice'])->name('repair.record.invoice');
     Route::get('/repairStock', fn () => redirect()->route('repair.record', ['status' => 'pending']))->name('repair.in-stock');
     Route::get('/repairOutStock', fn () => redirect()->route('repair.record', ['status' => 'delivered']))->name('repair.out-stock');
 
