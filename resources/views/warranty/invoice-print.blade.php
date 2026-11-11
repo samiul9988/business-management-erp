@@ -33,7 +33,7 @@
         table.items-table th, table.items-table td { border: 1px solid #000; padding: 3px 7px; font-size: 12px; }
         table.items-table th { background: rgba(243, 243, 243, .85); text-align: left; }
         table.items-table td { background: rgba(255, 255, 255, .78); }
-        table.items-table td.num, table.items-table th.num { text-align: right; }
+        table.items-table td.num, table.items-table th.num { text-align: center; }
         .signatures { display: flex; justify-content: space-between; margin-top: 24px; }
         .signatures span { display: inline-block; border-top: 1px solid #000; padding-top: 4px; min-width: 160px; text-align: center; background: rgba(255, 255, 255, .8); }
         .invoice-policy { margin-top: 10px; font-size: 9.5px; line-height: 1.4; background: rgba(255, 255, 255, .88); }
@@ -42,6 +42,9 @@
         .invoice-actions { width: 794px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: flex-end; gap: 1rem; }
         .invoice-actions button { padding: .5rem 1.1rem; border: 0; border-radius: 4px; background: #1769ed; color: #fff; font-size: .85rem; cursor: pointer; }
         .note-block { margin-top: 10px; font-size: 12px; }
+        .barcode-block { position: absolute; top: 16px; right: 52px; text-align: center; }
+        .barcode-block img { height: 46px; }
+        .barcode-block div { font-size: 10px; letter-spacing: .03em; margin-top: 2px; }
         @page { size: A4; margin: 0; }
         @media print {
             body { background: #fff; padding: 0; }
@@ -58,6 +61,9 @@
     <div class="invoice-sheet">
         <img src="{{ asset('images/invoice-header.png') }}" alt="" class="invoice-header-img">
         <div class="invoice-content">
+            <div class="barcode-block">
+                <img src="https://barcode.tec-it.com/barcode.ashx?data={{ urlencode($warranty->invoice_no) }}&code=Code128&dpi=96" alt="Barcode">
+            </div>
             <hr class="invoice-rule">
             <hr class="invoice-rule-thin">
             <h1 class="invoice-title">Warranty Invoice</h1>

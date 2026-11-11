@@ -33,7 +33,7 @@
         table.items-table th, table.items-table td { border: 1px solid #000; padding: 3px 7px; font-size: 12px; }
         table.items-table th { background: rgba(243, 243, 243, .85); text-align: left; }
         table.items-table td { background: rgba(255, 255, 255, .78); }
-        table.items-table td.num, table.items-table th.num { text-align: right; }
+        table.items-table td.num, table.items-table th.num { text-align: center; }
         table.items-table .serial-line { display: block; color: #444; font-size: 11.5px; margin-top: 2px; }
         .items-total-row td { font-weight: bold; }
         .invoice-bottom { display: flex; justify-content: space-between; gap: 2rem; margin-top: 6px; }
@@ -44,6 +44,9 @@
         .totals-table td.value { text-align: right; font-variant-numeric: tabular-nums; }
         .totals-table tr.rule td { border-top: 1px solid #000; padding-top: 6px; }
         .totals-table tr.grand td, .totals-table tr.net td { font-weight: bold; }
+        .barcode-block { position: absolute; top: 16px; right: 52px; text-align: center; }
+        .barcode-block img { height: 46px; }
+        .barcode-block div { font-size: 10px; letter-spacing: .03em; margin-top: 2px; }
         .signatures { display: flex; justify-content: space-between; margin-top: 24px; }
         .signatures span { display: inline-block; border-top: 1px solid #000; padding-top: 4px; min-width: 160px; text-align: center; background: rgba(255, 255, 255, .8); }
         .invoice-policy { margin-top: 10px; font-size: 9.5px; line-height: 1.4; background: rgba(255, 255, 255, .88); }
@@ -66,6 +69,9 @@
     <div class="invoice-sheet">
         <img src="{{ asset('images/invoice-header.png') }}" alt="" class="invoice-header-img">
         <div class="invoice-content">
+            <div class="barcode-block">
+                <img src="https://barcode.tec-it.com/barcode.ashx?data={{ urlencode($purchase->invoice_no) }}&code=Code128&dpi=96" alt="Barcode">
+            </div>
             <hr class="invoice-rule">
             <hr class="invoice-rule-thin">
             <h1 class="invoice-title">Purchase Invoice</h1>
